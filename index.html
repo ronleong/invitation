@@ -10,50 +10,125 @@
 <meta property="og:description" content="Ron has a question for you.">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#fff3ee;--bg2:#ffdfe0;--card:#fffaf7;--ink:#4a3340;--muted:#8a7480;--gold:#e58aa0;--line:#f4cfd3;--paper:#fffdf9;--env:#ffd9cf;--env2:#f7bfb0;--btn:#e5708c;--btntext:#ffffff;--fur:#fffdf9;--bubble:#ffeceb;
---serif:'Fraunces',Georgia,'Times New Roman',serif;--sans:'Nunito','Helvetica Neue',Arial,sans-serif;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2a1c26;--bg2:#3a2433;--card:#3b2735;--ink:#ffeaf0;--muted:#cdb0bc;--gold:#f09ab0;--line:#5a3b4e;--btn:#f09ab0;--btntext:#3a1f2c;--bubble:#4a3042}}
-:root[data-theme="dark"]{--bg:#2a1c26;--bg2:#3a2433;--card:#3b2735;--ink:#ffeaf0;--muted:#cdb0bc;--gold:#f09ab0;--line:#5a3b4e;--btn:#f09ab0;--btntext:#3a1f2c;--bubble:#4a3042}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
+:root{
+  --bg:#fff3ee;--bg2:#ffdfe0;--card:#fffaf7;--ink:#4a3340;--muted:#8a7480;
+  --gold:#e58aa0;--line:#f4cfd3;--paper:#fffdf9;--env:#ffd9cf;--env2:#f7bfb0;
+  --btn:#e5708c;--btntext:#ffffff;--bubble:#ffeceb;--field:#ffffff;
+  --serif:'Fraunces',Georgia,'Times New Roman',serif;
+  --sans:'Nunito','Helvetica Neue',Arial,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#2a1c26;--bg2:#3a2433;--card:#3b2735;--ink:#ffeaf0;--muted:#cdb0bc;
+    --gold:#f09ab0;--line:#5a3b4e;--btn:#f09ab0;--btntext:#3a1f2c;--bubble:#4a3042;--field:#32202d;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#2a1c26;--bg2:#3a2433;--card:#3b2735;--ink:#ffeaf0;--muted:#cdb0bc;
+  --gold:#f09ab0;--line:#5a3b4e;--btn:#f09ab0;--btntext:#3a1f2c;--bubble:#4a3042;--field:#32202d;
+}
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
 button,.btn,.env{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 button{-webkit-appearance:none;appearance:none}
-body{margin:0;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-weight:400;color:var(--ink);background:radial-gradient(ellipse at 50% 0%,var(--bg2),var(--bg) 70%);padding:20px;overflow-x:hidden}
+body{
+  margin:0;min-height:100vh;min-height:100dvh;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--sans);font-weight:400;color:var(--ink);
+  background:radial-gradient(ellipse at 50% 0%,var(--bg2),var(--bg) 70%);
+  padding:24px 16px;overflow-x:hidden;
+}
 .hidden{display:none!important}
-.petal{position:fixed;top:-20px;width:10px;height:14px;border-radius:50% 0 50% 0;pointer-events:none;animation:fall linear forwards;z-index:20;opacity:.85}
+.petal{
+  position:fixed;top:-20px;width:10px;height:14px;
+  border-radius:50% 0 50% 0;pointer-events:none;
+  animation:fall linear forwards;z-index:20;opacity:.85;
+}
 @keyframes fall{to{transform:translate(var(--dx),110vh) rotate(540deg)}}
 
 /* envelope */
 #envStage{text-align:center;transition:opacity .6s,transform .6s}
 #envStage.leave{opacity:0;transform:translateY(12px) scale(.96)}
-.env{position:relative;width:min(320px,84vw);height:210px;margin:90px auto 0;cursor:pointer;filter:drop-shadow(0 18px 22px #00000030);transition:transform .4s;animation:float 3s ease-in-out infinite}
+.env{
+  position:relative;width:min(320px,84vw);height:210px;margin:90px auto 0;
+  cursor:pointer;filter:drop-shadow(0 18px 22px #00000030);
+  transition:transform .4s;animation:float 3s ease-in-out infinite;
+}
 @keyframes float{50%{transform:translateY(-6px)}}
 .env.open{animation:none}
 .env>div{position:absolute;left:0;right:0}
 .back{top:0;bottom:0;background:var(--env2);border-radius:8px;z-index:1}
-.letter{left:6%!important;right:6%!important;top:8px;height:88%;background:var(--paper);z-index:2;padding:16px 10px;text-align:center;font-family:var(--serif);font-size:1.45rem;font-style:italic;color:#4a3340;transition:transform .8s .5s;box-shadow:0 1px 6px #0002}
-.letter small{display:block;font-family:var(--sans);font-style:normal;font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:#e58aa0;margin-top:6px}
-.front{top:0;bottom:0;background:linear-gradient(var(--env),var(--env2));border-radius:8px;z-index:3;-webkit-clip-path:polygon(0 0,50% 58%,100% 0,100% 100%,0 100%);clip-path:polygon(0 0,50% 58%,100% 0,100% 100%,0 100%)}
+.letter{
+  left:6%!important;right:6%!important;top:8px;height:88%;
+  background:var(--paper);z-index:2;padding:16px 10px;text-align:center;
+  font-family:var(--serif);font-size:1.45rem;font-style:italic;color:#4a3340;
+  transition:transform .8s .5s;box-shadow:0 1px 6px #0002;
+}
+.letter small{
+  display:block;font-family:var(--sans);font-style:normal;
+  font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;
+  color:#e58aa0;margin-top:6px;
+}
+.front{
+  top:0;bottom:0;background:linear-gradient(var(--env),var(--env2));
+  border-radius:8px;z-index:3;
+  -webkit-clip-path:polygon(0 0,50% 58%,100% 0,100% 100%,0 100%);
+  clip-path:polygon(0 0,50% 58%,100% 0,100% 100%,0 100%);
+}
 .addr{bottom:18px;left:0!important;right:0!important;z-index:3;text-align:center;color:#7a5560}
 .addr small{display:block;font-size:.58rem;letter-spacing:.3em;text-transform:uppercase;opacity:.7}
 .addr b{font-family:var(--serif);font-size:1.3rem;font-style:italic;font-weight:500}
-.flap{top:0;height:58%;background:linear-gradient(var(--env2),var(--env));z-index:4;-webkit-clip-path:polygon(0 0,100% 0,50% 100%);clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .7s,z-index 0s .35s;border-radius:8px 8px 0 0}
-.seal{top:calc(58% - 24px)!important;left:50%!important;right:auto!important;width:48px;height:48px;margin-left:-24px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f59ab0,#cf5673);color:#fff4e0;display:flex;align-items:center;justify-content:center;z-index:5;font-family:var(--serif);font-size:1.4rem;box-shadow:0 3px 8px #0006,inset 0 0 0 3px #ffffff1c;transition:opacity .3s}
+.flap{
+  top:0;height:58%;background:linear-gradient(var(--env2),var(--env));z-index:4;
+  -webkit-clip-path:polygon(0 0,100% 0,50% 100%);
+  clip-path:polygon(0 0,100% 0,50% 100%);
+  transform-origin:top;transition:transform .7s,z-index 0s .35s;
+  border-radius:8px 8px 0 0;
+}
+.seal{
+  top:calc(58% - 24px)!important;left:50%!important;right:auto!important;
+  width:48px;height:48px;margin-left:-24px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#f59ab0,#cf5673);
+  color:#fff4e0;display:flex;align-items:center;justify-content:center;
+  z-index:5;font-family:var(--serif);font-size:1.4rem;
+  box-shadow:0 3px 8px #0006,inset 0 0 0 3px #ffffff1c;transition:opacity .3s;
+}
 .env.open .flap{transform:rotateX(180deg);z-index:1}
 .env.open .seal{opacity:0}
 .env.open .letter{transform:translateY(-105px)}
-.tap{margin-top:46px;font-size:.7rem;letter-spacing:.35em;text-transform:uppercase;color:var(--muted);animation:pulse 2s infinite}
+.tap{
+  margin-top:46px;font-size:.7rem;letter-spacing:.35em;
+  text-transform:uppercase;color:var(--muted);animation:pulse 2s infinite;
+}
 @keyframes pulse{50%{opacity:.35}}
 
 /* card */
-.card{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:30px;padding:34px 26px 30px;text-align:center;position:relative;box-shadow:0 24px 60px #e5708c2e;animation:rise .9s ease}
-.card:before{content:"";position:absolute;top:9px;left:9px;right:9px;bottom:9px;border:1.5px dashed var(--line);border-radius:22px;pointer-events:none}
+.card{
+  width:100%;max-width:440px;background:var(--card);
+  border:1px solid var(--line);border-radius:30px;
+  padding:34px 24px 28px;text-align:center;position:relative;
+  box-shadow:0 24px 60px #e5708c2e;animation:rise .9s ease;
+}
+.card:before{
+  content:"";position:absolute;top:9px;left:9px;right:9px;bottom:9px;
+  border:1.5px dashed var(--line);border-radius:22px;pointer-events:none;
+}
 @keyframes rise{from{opacity:0;transform:translateY(28px)}}
-.bubble{position:relative;box-shadow:0 3px 8px #e5708c1f;display:inline-block;background:var(--bubble);border:1px solid var(--line);padding:6px 16px;font-family:var(--serif);font-style:italic;font-size:1.05rem;border-radius:18px;margin-bottom:10px;transition:all .3s}
-.bubble:after{content:"";position:absolute;left:50%;bottom:-6px;width:10px;height:10px;margin-left:-5px;background:var(--bubble);border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg)}
-.mascot{width:190px;height:180px;display:block;margin:0 auto 4px;overflow:visible}
+.bubble{
+  position:relative;box-shadow:0 3px 8px #e5708c1f;display:inline-block;
+  background:var(--bubble);border:1px solid var(--line);padding:6px 16px;
+  font-family:var(--serif);font-style:italic;font-size:1.02rem;
+  border-radius:18px;margin-bottom:8px;transition:all .3s;
+}
+.bubble:after{
+  content:"";position:absolute;left:50%;bottom:-6px;width:10px;height:10px;
+  margin-left:-5px;background:var(--bubble);border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);transform:rotate(45deg);
+}
+.mascot{width:170px;height:160px;display:block;margin:0 auto 2px;overflow:visible}
 .dogbody{animation:bob 3s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-4px)}}
 .eye{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
@@ -66,37 +141,135 @@ body{margin:0;min-height:100vh;min-height:100dvh;display:flex;align-items:center
 .sad .brow{display:block}.sad .tongue{display:none}
 .happy .sparkle{display:block}.happy .tail{animation-duration:.3s}
 .happy .dogbody{animation:jump .7s ease-in-out infinite}
-@keyframes jump{50%{transform:translateY(-12px)}}
-.eyebrow{font-size:.66rem;letter-spacing:.38em;text-transform:uppercase;color:var(--gold);margin-top:6px}
-h1{font-family:var(--serif);font-weight:500;font-size:2.15rem;line-height:1.15;margin:12px 0 0}
+@keyframes jump{50%{transform:translateY(-10px)}}
+.eyebrow{font-size:.64rem;letter-spacing:.36em;text-transform:uppercase;color:var(--gold);margin-top:4px}
+h1{font-family:var(--serif);font-weight:500;font-size:2.05rem;line-height:1.15;margin:10px 0 0}
 h1 em{font-style:italic;color:var(--gold)}
-.rule{width:64px;height:0;border-top:3px dotted var(--gold);margin:18px auto}
-p{margin:0;font-size:.98rem;line-height:1.65;color:var(--muted)}
-.menu{margin-top:20px;font-size:.66rem;letter-spacing:.28em;text-transform:uppercase;color:var(--ink);opacity:.75}
+.rule{width:56px;height:0;border-top:3px dotted var(--gold);margin:14px auto}
+p{margin:0;font-size:.95rem;line-height:1.6;color:var(--muted)}
+.menu{margin-top:18px;font-size:.64rem;letter-spacing:.26em;text-transform:uppercase;color:var(--ink);opacity:.75}
 .menu i{color:var(--gold);font-style:normal;margin:0 6px}
-.btns{position:relative;height:160px;margin-top:20px}
-button,.btn{font-family:var(--sans);font-size:.76rem;font-weight:400;letter-spacing:.28em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .25s}
-.primary{background:var(--btn);color:var(--btntext);border:1px solid var(--btn);border-radius:999px;padding:15px 38px;display:inline-block;box-shadow:0 8px 18px #e5708c40}
-#yes{position:absolute;left:50%;top:0;transform:translateX(-50%) scale(1);transform-origin:center top;white-space:nowrap}
-.ghost{position:absolute;border-radius:999px;background:var(--bubble);border:1px solid var(--line);color:var(--muted);padding:11px 20px;font-size:.68rem;white-space:nowrap;transition:left .35s cubic-bezier(.3,1.5,.5,1),top .35s cubic-bezier(.3,1.5,.5,1)}
+.sign{margin-top:14px;font-family:var(--serif);font-style:italic;font-size:1.08rem;color:var(--gold)}
 
-/* done */
-.ticket{margin:24px 0 8px;border:1.5px dashed var(--line);border-radius:18px;padding:6px 16px;text-align:left}
-.row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:11px 2px}
-.row+.row{border-top:1px solid var(--line)}
-.row b{font-weight:400;font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
-.row span{font-family:var(--serif);font-size:1.15rem;text-align:right}
-.count{font-family:var(--serif);font-style:italic;color:var(--gold);font-size:1.15rem;margin:14px 0 6px}
-.pick{font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);margin:20px 0 10px}
-.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:26px}
-.chip{border-radius:999px;padding:8px 14px;background:none;color:var(--muted);border:1px solid var(--line);font-size:.62rem;letter-spacing:.18em}
+.btns{position:relative;height:148px;margin-top:18px}
+button,.btn{
+  font-family:var(--sans);font-size:.74rem;font-weight:600;
+  letter-spacing:.22em;text-transform:uppercase;cursor:pointer;
+  text-decoration:none;transition:all .25s;
+}
+.primary{
+  background:var(--btn);color:var(--btntext);border:1px solid var(--btn);
+  border-radius:999px;padding:14px 32px;display:inline-flex;
+  align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 8px 18px #e5708c40;
+}
+.primary:hover{filter:brightness(1.04);transform:translateY(-1px)}
+.secondary{
+  background:var(--bubble);color:var(--ink);border:1px solid var(--line);
+  border-radius:999px;padding:12px 18px;font-size:.66rem;letter-spacing:.18em;
+}
+.secondary:hover{border-color:var(--gold)}
+#yes{position:absolute;left:50%;top:0;transform:translateX(-50%) scale(1);transform-origin:center top;white-space:nowrap}
+.ghost{
+  position:absolute;border-radius:999px;background:var(--bubble);
+  border:1px solid var(--line);color:var(--muted);padding:10px 18px;
+  font-size:.65rem;font-weight:400;white-space:nowrap;
+  transition:left .32s cubic-bezier(.3,1.5,.5,1),top .32s cubic-bezier(.3,1.5,.5,1);
+}
+
+/* done / booking layout */
+.section-label{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:.62rem;font-weight:700;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--muted);margin:18px 0 8px;
+}
+.quick-dates{
+  display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px;
+  scrollbar-width:none;
+}
+.quick-dates::-webkit-scrollbar{display:none}
+.qchip{
+  flex:0 0 auto;border-radius:12px;padding:7px 11px;
+  background:var(--field);border:1px solid var(--line);color:var(--ink);
+  font-family:var(--sans);font-size:.68rem;font-weight:600;
+  letter-spacing:.04em;text-transform:none;
+}
+.qchip span{display:block;font-size:.58rem;font-weight:400;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+.qchip.on{background:var(--gold);border-color:var(--gold);color:#fff}
+.qchip.on span{color:#fff9}
+
+.picker-grid{
+  display:grid;grid-template-columns:1.15fr 0.85fr;gap:10px;text-align:left;
+}
+@media (max-width:380px){.picker-grid{grid-template-columns:1fr}}
+.field-box{
+  background:var(--field);border:1px solid var(--line);border-radius:16px;
+  padding:9px 12px 10px;transition:border-color .2s,box-shadow .2s;
+}
+.field-box:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px #e58aa01f}
+.field-box label{
+  display:block;font-size:.58rem;font-weight:700;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:3px;
+}
+select{
+  display:block;width:100%;padding:2px 24px 2px 0;
+  font-family:var(--serif);font-size:1.02rem;color:var(--ink);
+  background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23e58aa0' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 2px center;
+  border:none;-webkit-appearance:none;appearance:none;cursor:pointer;
+}
+select:focus{outline:none}
+
+/* ticket stub */
+.ticket{
+  margin:16px 0 6px;background:var(--field);
+  border:1.5px solid var(--line);border-radius:18px;
+  padding:12px 16px;text-align:left;position:relative;
+}
+.ticket-head{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-bottom:9px;margin-bottom:9px;border-bottom:1.5px dashed var(--line);
+}
+.ticket-head b{font-size:.6rem;letter-spacing:.26em;text-transform:uppercase;color:var(--muted)}
+.badge{
+  font-family:var(--serif);font-style:italic;font-size:.86rem;
+  color:var(--gold);background:var(--bubble);padding:2px 10px;border-radius:999px;
+}
+.ticket-body{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.t-cell small{display:block;font-size:.56rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.t-cell span{font-family:var(--serif);font-size:1.02rem;color:var(--ink);display:block}
+.t-cell.full{grid-column:1 / -1;padding-top:6px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.cal-link{
+  font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gold);text-decoration:none;border-bottom:1px dotted var(--gold);
+}
+
+.chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:14px}
+.chip{
+  border-radius:999px;padding:7px 13px;background:var(--field);
+  color:var(--muted);border:1px solid var(--line);
+  font-size:.64rem;font-weight:600;letter-spacing:.12em;
+}
 .chip:hover{border-color:var(--gold)}
 .chip.on{background:var(--gold);border-color:var(--gold);color:#fff}
-.small{font-size:.8rem;color:var(--muted);margin-top:14px;font-style:italic;font-family:var(--serif)}
-label.pick{display:block}
-select{display:block;width:100%;margin:0 0 14px;padding:14px 42px 14px 16px;font-family:var(--serif);font-size:1.15rem;color:var(--ink);background:var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23e58aa0' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 16px center;border:1px solid var(--line);border-radius:14px;-webkit-appearance:none;appearance:none;text-align:left}
-select:focus{outline:none;border-color:var(--gold)}
-.primary.disabled{opacity:.35;pointer-events:none}
+
+.note-input{
+  width:100%;padding:11px 14px;border-radius:14px;
+  border:1px solid var(--line);background:var(--field);color:var(--ink);
+  font-family:var(--sans);font-size:.86rem;margin-bottom:16px;
+}
+.note-input::placeholder{color:var(--muted);opacity:.75}
+.note-input:focus{outline:none;border-color:var(--gold)}
+
+.actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.actions .primary{flex:1 1 200px}
+.actions .secondary{flex:0 1 auto}
+.small{font-size:.82rem;color:var(--muted);margin-top:12px;font-style:italic;font-family:var(--serif);min-height:1.2em}
+
+.bow{position:absolute;top:-17px;left:50%;margin-left:-30px;width:60px;height:34px;z-index:2;filter:drop-shadow(0 3px 4px #e5708c40)}
+.bow svg{width:100%;height:100%;display:block}
+.bow path,.bow circle{fill:var(--btn)}
+.bow circle{stroke:#ffffff66;stroke-width:1.5}
+.primary.disabled{opacity:.38;pointer-events:none}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
@@ -115,26 +288,39 @@ select:focus{outline:none;border-color:var(--gold)}
 </div>
 
 <div class="card hidden" id="card">
-  <div class="bubble" id="bubble">Someone has a question for you.</div>
-  <svg class="mascot" viewBox="0 0 200 190" aria-label="A fluffy white bichon in a floral collar">
+  <div class="bow" aria-hidden="true">
+    <svg viewBox="0 0 60 34">
+      <path d="M30 17C22 2 4 2 4 14C4 28 22 28 30 17Z"/>
+      <path d="M30 17C38 2 56 2 56 14C56 28 38 28 30 17Z"/>
+      <path d="M28 20L21 33L30 28Z"/>
+      <path d="M32 20L39 33L30 28Z"/>
+      <circle cx="30" cy="17" r="5.5"/>
+    </svg>
+  </div>
+
+  <div class="bubble" id="bubble" aria-live="polite">You are cordially invited.</div>
+
+  <svg class="mascot" viewBox="0 0 200 190" role="img" aria-label="A fluffy white bichon in a floral collar">
     <ellipse cx="100" cy="182" rx="62" ry="5" fill="#00000014"/>
     <g class="dogbody">
       <circle class="tail" cx="146" cy="146" r="12" fill="#fffdf9" style="stroke:var(--gold)" stroke-width="1.6"/>
       <g fill="#fffdf9" style="stroke:var(--gold)" stroke-width="1.6">
         <ellipse cx="100" cy="146" rx="44" ry="31"/><circle cx="76" cy="170" r="13"/><circle cx="124" cy="170" r="13"/>
       </g>
-      <!-- floral collar -->
       <path d="M52 112 Q100 96 148 112 Q150 128 138 134 Q100 120 62 134 Q50 128 52 112Z" fill="#f4b9a3" stroke="#e6a38b" stroke-width="1"/>
       <path d="M56 116 Q60 126 58 131 M68 112 Q72 124 70 129 M144 116 Q140 126 142 131 M132 112 Q128 124 130 129" stroke="#e6a38b" stroke-width=".8" fill="none" opacity=".7"/>
       <path d="M70 118 Q100 150 130 118 L124 132 Q100 156 76 132Z" fill="#fbe9df" stroke="#e6a38b" stroke-width="1"/>
-      <g><circle cx="80" cy="128" r="2.6" fill="#e88aa0"/><circle cx="90" cy="138" r="2.4" fill="#f2c36b"/><circle cx="112" cy="138" r="2.6" fill="#e88aa0"/><circle cx="121" cy="127" r="2.4" fill="#f2c36b"/>
-      <ellipse cx="86" cy="143" rx="3" ry="1.5" fill="#a9cba6" transform="rotate(-25 86 143)"/><ellipse cx="115" cy="143" rx="3" ry="1.5" fill="#a9cba6" transform="rotate(25 115 143)"/></g>
+      <g>
+        <circle cx="80" cy="128" r="2.6" fill="#e88aa0"/><circle cx="90" cy="138" r="2.4" fill="#f2c36b"/>
+        <circle cx="112" cy="138" r="2.6" fill="#e88aa0"/><circle cx="121" cy="127" r="2.4" fill="#f2c36b"/>
+        <ellipse cx="86" cy="143" rx="3" ry="1.5" fill="#a9cba6" transform="rotate(-25 86 143)"/>
+        <ellipse cx="115" cy="143" rx="3" ry="1.5" fill="#a9cba6" transform="rotate(25 115 143)"/>
+      </g>
       <g transform="translate(100 134)" fill="#fff" stroke="#e3d6c8" stroke-width="1.2">
         <circle cx="0" cy="-8" r="7"/><circle cx="8" cy="-2" r="7"/><circle cx="5" cy="7" r="7"/><circle cx="-5" cy="7" r="7"/><circle cx="-8" cy="-2" r="7"/>
         <circle r="3.6" fill="#e9d7a8" stroke="#c9a96a"/>
       </g>
       <g fill="#fff" stroke="#d8cdb8" stroke-width=".8"><circle cx="116" cy="146" r="1.9"/><circle cx="119" cy="152" r="1.9"/><circle cx="117" cy="158" r="1.9"/></g>
-      <!-- fluffy round head -->
       <g fill="#fffdf9" style="stroke:var(--gold)" stroke-width="1.6">
         <circle cx="52" cy="74" r="23"/><circle cx="148" cy="74" r="23"/><circle cx="58" cy="44" r="23"/><circle cx="142" cy="44" r="23"/>
         <circle cx="80" cy="26" r="23"/><circle cx="120" cy="26" r="23"/><circle cx="100" cy="22" r="23"/>
@@ -154,36 +340,73 @@ select:focus{outline:none;border-color:var(--gold)}
     <g class="sparkle" fill="#f5b942"><path d="M24 40 l2.5 7 7 2.5 -7 2.5 -2.5 7 -2.5-7 -7-2.5 7-2.5z"/><path d="M172 24 l2.5 7 7 2.5 -7 2.5 -2.5 7 -2.5-7 -7-2.5 7-2.5z"/><path d="M178 118 l2 5 5 2 -5 2 -2 5 -2-5 -5-2 5-2z"/></g>
   </svg>
 
-  <div class="eyebrow">✿ An invitation ✿</div>
+  <div class="eyebrow">✿ With warm regards ✿</div>
 
   <div id="ask">
-    <h1>Dinner, <em id="name"></em>?</h1>
+    <h1>Dear <em id="name"></em>,</h1>
     <div class="rule"></div>
-    <p id="sub">An evening of fresh sushi, good conversation and no agenda. I would love for you to join me.</p>
+    <p id="sub">Would you do me the honour of joining me for a sushi dinner? Your company would make the evening complete.</p>
     <div class="menu">Omakase<i>·</i>Nigiri<i>·</i>Maki<i>·</i>Matcha</div>
+    <div class="sign">Yours sincerely, <span id="from"></span> ✿</div>
     <div class="btns" id="btns">
-      <button class="primary" id="yes">Accept</button>
-      <button class="ghost" id="no">Decline</button>
+      <button class="primary" id="yes">Gladly accept</button>
+      <button class="ghost" id="no">Regretfully decline</button>
     </div>
   </div>
 
   <div id="done" class="hidden">
-    <h1>Wonderful.</h1>
+    <h1>With great pleasure!</h1>
     <div class="rule"></div>
-    <p>Choose whichever date and time suit you best.</p>
-    <label class="pick" for="dateSel">Date</label><select id="dateSel"><option value="">Choose a date</option></select>
-    <label class="pick" for="timeSel">Time</label><select id="timeSel"><option value="">Choose a time</option></select>
-    <div class="ticket">
-      <div class="row"><b>Date</b><span id="d-date"></span></div>
-      <div class="row"><b>Time</b><span id="d-time"></span></div>
-      <div class="row"><b>Venue</b><span id="d-where"></span></div>
-      
+    <p>Pick a day and time that suit you best.</p>
+
+    <div class="section-label"><span>Quick pick</span></div>
+    <div class="quick-dates" id="quickDates" aria-label="Upcoming weekend dates"></div>
+
+    <div class="picker-grid">
+      <div class="field-box">
+        <label for="dateSel">Date</label>
+        <select id="dateSel"><option value="">Select day…</option></select>
+      </div>
+      <div class="field-box">
+        <label for="timeSel">Time</label>
+        <select id="timeSel"><option value="">Select time…</option></select>
+      </div>
     </div>
-    <div class="count" id="count"></div>
-    <div class="pick">Any favourites I should know about?</div>
+
+    <div class="ticket">
+      <div class="ticket-head">
+        <b>Dinner Reservation</b>
+        <span class="badge" id="count">Awaiting date</span>
+      </div>
+      <div class="ticket-body">
+        <div class="t-cell">
+          <small>Date</small>
+          <span id="d-date">To be chosen</span>
+        </div>
+        <div class="t-cell">
+          <small>Time</small>
+          <span id="d-time">To be chosen</span>
+        </div>
+        <div class="t-cell full">
+          <div>
+            <small>Venue</small>
+            <span id="d-where"></span>
+          </div>
+          <a class="cal-link hidden" id="calLink" download="sushi-dinner.ics" href="#">+ Calendar</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label"><span>Your favourites (optional)</span></div>
     <div class="chips" id="chips"></div>
-    <a class="btn primary" id="ig" href="#" target="_blank" rel="noopener">Reply on Instagram</a>
-    <div class="small" id="hint">Choose a date and time first, then one tap opens our chat and copies your reply.</div>
+
+    <input class="note-input" id="noteInput" type="text" maxlength="120" placeholder="Any allergies, cravings, or notes? (optional)">
+
+    <div class="actions">
+      <a class="btn primary disabled" id="ig" href="#" target="_blank" rel="noopener">Reply on Instagram</a>
+      <button class="secondary disabled" id="copyBtn" type="button">Copy reply</button>
+    </div>
+    <div class="small" id="hint" aria-live="polite">Choose a date and time first.</div>
   </div>
 </div>
 
@@ -191,142 +414,249 @@ select:focus{outline:none;border-color:var(--gold)}
 /* EDIT THESE */
 const CONFIG = {
   herName: "YiHwa",
-  initial: "❖",                      // letter on the wax seal, e.g. your initial
+  initial: "❖",
   dmLink: "https://ig.me/m/ronnn.leong",
-  month: 11, year: 2026,             // 11 = December (0 = January)
-  startHour: 11, endHour: 19, stepMinutes: 30,   // 11 AM to 7 PM
-  where: "Tono Izayaki",
+  profileLink: "https://www.instagram.com/ronnn.leong/",
+  month: 11, year: 2026, // 11 = December (0 = January)
+  startHour: 11, endHour: 20, stepMinutes: 30,
+  defaultTime: "7:00 PM",
+  where: "Tono Izakaya",
+  fromName: "Ron",
   favourites: ["Salmon", "Ebi", "Tamago", "Maki", "Tuna", "Matcha ice cream"]
 };
 
 const $ = id => document.getElementById(id);
-["name","envName"].forEach(i => $(i).textContent = CONFIG.herName);
-$("seal").textContent = CONFIG.initial;
-$("d-date").textContent = "To be chosen"; $("d-time").textContent = "To be chosen";
+["name","envName"].forEach(i => $(i).textContent = CONFIG.herName);$("seal").textContent = CONFIG.initial;
 $("d-where").textContent = CONFIG.where;
-$("ig").href = CONFIG.dmLink;
+$("from").textContent = CONFIG.fromName;
+const onPC = window.matchMedia("(hover:hover) and (pointer:fine)").matches;
+$("ig").href = onPC ? CONFIG.profileLink : CONFIG.dmLink;
 
 /* petals */
 function petals(n){
   const cols = ["#f6b4c3","#ffd9cf","#ffe3a3","#f2a9b8"];
-  for(let i=0;i<n;i++){
-    const p = document.createElement("span"); p.className = "petal";
-    p.style.left = Math.random()*100 + "vw"; p.style.background = cols[i % cols.length];
+  for(let i = 0; i < n; i++){
+    const p = document.createElement("span");
+    p.className = "petal";
+    p.setAttribute("aria-hidden", "true");
+    p.style.left = Math.random()*100 + "vw";
+    p.style.background = cols[i % cols.length];
     p.style.setProperty("--dx", (Math.random()*140 - 70) + "px");
-    p.style.animationDuration = (3.5 + Math.random()*3) + "s"; p.style.animationDelay = (Math.random()*1.4) + "s";
-    document.body.appendChild(p); setTimeout(() => p.remove(), 8500);
+    p.style.animationDuration = (3.5 + Math.random()*3) + "s";
+    p.style.animationDelay = (Math.random()*1.2) + "s";
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 8500);
   }
 }
 
 /* open envelope */
-const env = $("env"); let opened = false;
+const env = $("env");
+let opened = false;
 function openEnv(){
-  if(opened) return; opened = true;
-  env.classList.add("open"); $("tap").classList.add("hidden");
-  setTimeout(() => $("envStage").classList.add("leave"), 1700);
-  setTimeout(() => { $("envStage").classList.add("hidden"); $("card").classList.remove("hidden"); petals(10); }, 2300);
+  if(opened) return;
+  opened = true;
+  env.classList.add("open");
+  $("tap").classList.add("hidden");
+  setTimeout(() => $("envStage").classList.add("leave"), 1600);
+  setTimeout(() => {
+    $("envStage").classList.add("hidden");
+    $("card").classList.remove("hidden");
+    petals(10);
+  }, 2200);
 }
 env.addEventListener("click", openEnv);
-env.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); openEnv(); } });
+env.addEventListener("keydown", e => {
+  if(e.key === "Enter" || e.key === " "){ e.preventDefault(); openEnv(); }
+});
 
-/* playful decline: it politely slips away */
+/* playful decline with touch/click debounce & safe bounds */
 const card = $("card"), no = $("no"), yes = $("yes"), btns = $("btns"), bubble = $("bubble");
-const pleas = ["Are you certain?","Do reconsider","Truly?","Please?","Last chance","Just say yes"];
-const bubbles = ["Hmm?","Are you sure?","Please say yes?","*hopeful look*","Pretty please?"];
-let tries = 0, scale = 1;
+const pleas = ["Are you quite certain?","Kindly reconsider","Pretty please?","Truly?","One last chance","Do say yes"];
+const bubbles = ["Oh dear…","Might you reconsider?","Pretty please?","*hopeful look*","We’d be ever so grateful."];
+let tries = 0, scale = 1, lastTouch = 0;
+
 function placeNo(){
-  const b = btns.getBoundingClientRect(), n = no.getBoundingClientRect();
-  const top = 86 + Math.random() * Math.max(0, b.height - 86 - n.height);
-  no.style.left = (Math.random() * Math.max(0, b.width - n.width)) + "px";
+  const b = btns.getBoundingClientRect();
+  const n = no.getBoundingClientRect();
+  const y = yes.getBoundingClientRect();
+  const safeTop = Math.max(76, (y.bottom - b.top) + 12);
+  const maxTop = Math.max(safeTop, b.height - n.height);
+  const top = safeTop + Math.random() * Math.max(0, maxTop - safeTop);
+  const left = Math.random() * Math.max(0, b.width - n.width);
+  no.style.transform = "none";
+  no.style.left = left + "px";
   no.style.top = top + "px";
 }
+
 function dodge(e){
+  if(e.type === "touchstart") lastTouch = Date.now();
+  if(e.type === "click" && Date.now() - lastTouch < 400) return;
   e.preventDefault();
   no.textContent = pleas[Math.min(tries, pleas.length - 1)];
   bubble.textContent = bubbles[tries % bubbles.length];
-  tries++; scale = Math.min(scale + 0.1, 1.45);
+  tries++;
+  scale = Math.min(scale + 0.06, 1.24);
   yes.style.transform = "translateX(-50%) scale(" + scale + ")";
   card.classList.add("sad");
-  $("sub").textContent = "Look at those drooping ears. Surely you can’t say no to that face.";
+  $("sub").textContent = "Those little ears are drooping. Might you kindly reconsider?";
   placeNo();
 }
-no.style.left = "calc(50% - 50px)"; no.style.top = "92px";
+no.style.left = "50%";
+no.style.top = "84px";
+no.style.transform = "translateX(-50%)";
 ["mouseenter","touchstart","click"].forEach(ev => no.addEventListener(ev, dodge, {passive:false}));
 
 /* favourites + reply */
 const picked = new Set();
-function buildReply(){
-  let m = "I’d love to join you for sushi dinner on " + fmtDate(selDate) + " at " + selTime + ".";
-  if(picked.size) m += " My favourites: " + [...picked].join(", ") + ".";
-  return m;
-}
 CONFIG.favourites.forEach(f => {
-  const c = document.createElement("button"); c.className = "chip"; c.textContent = f;
-  c.addEventListener("click", () => { picked.has(f) ? picked.delete(f) : picked.add(f); c.classList.toggle("on"); });
+  const c = document.createElement("button");
+  c.type = "button";
+  c.className = "chip";
+  c.textContent = f;
+  c.addEventListener("click", () => {
+    picked.has(f) ? picked.delete(f) : picked.add(f);
+    c.classList.toggle("on");
+  });
   $("chips").appendChild(c);
 });
 
 let selDate = null, selTime = null;
-const fmtDate = d => d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
-const shortDate = d => d.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});
+const fmtDate = d => d.toLocaleDateString("en-GB", {weekday:"short", day:"numeric", month:"short"});
+const fmtLongDate = d => d.toLocaleDateString("en-GB", {weekday:"long", day:"numeric", month:"long"});
+
+function buildReply(){
+  let m = `I would be delighted to join you for sushi dinner at ${CONFIG.where} on ${fmtLongDate(selDate)} at ${selTime}.`;
+  if(picked.size) m += ` My favourites: ${[...picked].join(", ")}.`;
+  const note = $("noteInput").value.trim();
+  if(note) m += ` Note: ${note}`;
+  return m;
+}
+
+/* build date options (target month, or next 21 days fallback) */
+const today0 = new Date();
+today0.setHours(0,0,0,0);
+let days = [];
+for(let d = new Date(CONFIG.year, CONFIG.month, 1); d.getMonth() === CONFIG.month; d.setDate(d.getDate() + 1)){
+  if(d >= today0) days.push(new Date(d));
+}
+if(days.length < 5){
+  days = [];
+  for(let i = 1; i <= 21; i++){
+    const d = new Date(today0);
+    d.setDate(today0.getDate() + i);
+    days.push(d);
+  }
+}
+
+days.forEach((d, i) => {
+  const o = document.createElement("option");
+  o.value = i;
+  o.textContent = fmtDate(d);
+  $("dateSel").appendChild(o);
+});
+
+/* quick-pick chips for Fri/Sat/Sun (or first 4 available days) */
+const quickPool = days.filter(d => [5, 6, 0].includes(d.getDay())).slice(0, 5);
+(quickPool.length ? quickPool : days.slice(0, 4)).forEach(d => {
+  const idx = days.indexOf(d);
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "qchip";
+  b.dataset.idx = idx;
+  b.innerHTML = `<span>${d.toLocaleDateString("en-GB",{weekday:"short"})}</span>${d.toLocaleDateString("en-GB",{day:"numeric",month:"short"})}`;
+  b.addEventListener("click", () => {
+    $("dateSel").value = idx;
+    selDate = days[idx];
+    refresh();
+  });
+  $("quickDates").appendChild(b);
+});
+
+/* time options */
+for(let m = CONFIG.startHour * 60; m <= CONFIG.endHour * 60; m += CONFIG.stepMinutes){
+  const h = Math.floor(m / 60), mm = m % 60;
+  const label = (h % 12 || 12) + ":" + String(mm).padStart(2, "0") + " " + (h < 12 ? "AM" : "PM");
+  const o = document.createElement("option");
+  o.value = label;
+  o.textContent = label;
+  $("timeSel").appendChild(o);
+}
+
+$("dateSel").addEventListener("change", e => {
+  selDate = e.target.value === "" ? null : days[+e.target.value];
+  refresh();
+});
+$("timeSel").addEventListener("change", e => {
+  selTime = e.target.value || null;
+  refresh();
+});
+
+function buildICS(dateObj, timeStr){
+  const [hm, mer] = timeStr.split(" ");
+  let [h, m] = hm.split(":").map(Number);
+  if(mer === "PM" && h !== 12) h += 12;
+  if(mer === "AM" && h === 12) h = 0;
+  const start = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate(), h, m);
+  const end = new Date(start.getTime() + 90 * 60000);
+  const pad = n => String(n).padStart(2, "0");
+  const stamp = d => `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+  const ics = [
+    "BEGIN:VCALENDAR","VERSION:2.0","BEGIN:VEVENT",
+    `DTSTART:${stamp(start)}`,`DTEND:${stamp(end)}`,
+    `SUMMARY:Sushi Dinner with ${CONFIG.fromName}`,
+    `LOCATION:${CONFIG.where}`,
+    "END:VEVENT","END:VCALENDAR"
+  ].join("\r\n");
+  return "data:text/calendar;charset=utf-8," + encodeURIComponent(ics);
+}
+
 function refresh(){
   $("d-date").textContent = selDate ? fmtDate(selDate) : "To be chosen";
   $("d-time").textContent = selTime || "To be chosen";
-  const ready = selDate && selTime;
-  $("ig").classList.toggle("disabled", !ready);
-  if(ready) $("hint").textContent = "Lovely. One tap opens our chat and copies your reply.";
-  countdown();
-}
-function makeChips(box, items, label, onPick){
-  const all = [];
-  items.forEach(it => {
-    const c = document.createElement("button"); c.className = "chip"; c.textContent = label(it);
-    c.addEventListener("click", () => { all.forEach(x => x.classList.remove("on")); c.classList.add("on"); onPick(it); refresh(); });
-    all.push(c); box.appendChild(c);
-  });
-}
-const today0 = new Date(); today0.setHours(0,0,0,0);
-const days = [];
-for(let d = new Date(CONFIG.year, CONFIG.month, 1); d.getMonth() === CONFIG.month; d.setDate(d.getDate() + 1)){ if(d >= today0) days.push(new Date(d)); }
-const times = [];
-for(let m = CONFIG.startHour * 60; m <= CONFIG.endHour * 60; m += CONFIG.stepMinutes){ const h = Math.floor(m / 60), mm = m % 60; times.push((h % 12 || 12) + ":" + String(mm).padStart(2, "0") + " " + (h < 12 ? "AM" : "PM")); }
-days.forEach((d, i) => { const o = document.createElement("option"); o.value = i; o.textContent = fmtDate(d); $("dateSel").appendChild(o); });
-$("dateSel").addEventListener("change", e => { selDate = e.target.value === "" ? null : days[+e.target.value]; refresh(); });
-times.forEach(t => { const o = document.createElement("option"); o.value = t; o.textContent = t; $("timeSel").appendChild(o); });
-$("timeSel").addEventListener("change", e => { selTime = e.target.value || null; refresh(); });
-$("ig").classList.add("disabled");
 
-function countdown(){
-  if(!selDate) return;
-  const t0 = new Date(); t0.setHours(0,0,0,0);
-  const d = Math.round((selDate - t0) / 864e5);
-  if(d < 0) return;
-  $("count").textContent = d === 0 ? "Tonight" : d === 1 ? "Tomorrow" : d + " days to go";
+  document.querySelectorAll(".qchip").forEach(btn => {
+    btn.classList.toggle("on", selDate && days[+btn.dataset.idx]?.getTime() === selDate.getTime());
+  });
+
+  if(selDate){
+    const d = Math.round((selDate - today0) / 864e5);
+    $("count").textContent = d === 0 ? "Tonight" : d === 1 ? "Tomorrow" : `In ${d} days`;
+  } else {
+    $("count").textContent = "Awaiting date";
+  }
+
+  const ready = Boolean(selDate && selTime);
+  $("ig").classList.toggle("disabled", !ready);
+  $("copyBtn").classList.toggle("disabled", !ready);
+  $("calLink").classList.toggle("hidden", !ready);
+
+  if(ready){
+    $("calLink").href = buildICS(selDate, selTime);
+    $("hint").textContent = onPC
+      ? "Ready! Copy your reply or open my Instagram profile to paste it."
+      : "Ready! Tap Reply on Instagram — your message will copy automatically.";
+  } else {
+    $("hint").textContent = "Choose a date and time first.";
+  }
 }
 
 yes.addEventListener("click", () => {
-  card.classList.remove("sad"); card.classList.add("happy");
-  bubble.textContent = "Wonderful. See you there!";
-  $("ask").classList.add("hidden"); $("done").classList.remove("hidden");
+  card.classList.remove("sad");
+  card.classList.add("happy");
+  bubble.textContent = "Splendid! We shall see you there.";
+  $("ask").classList.add("hidden");
+  $("done").classList.remove("hidden");
+  if(CONFIG.defaultTime && [...$("timeSel").options].some(o => o.value === CONFIG.defaultTime)){
+    $("timeSel").value = CONFIG.defaultTime;
+    selTime = CONFIG.defaultTime;
+    refresh();
+  }
   petals(26);
 });
-function legacyCopy(t){
-  const a = document.createElement("textarea");
-  a.value = t; a.setAttribute("readonly", ""); a.style.cssText = "position:fixed;top:0;left:0;opacity:0;font-size:16px";
-  document.body.appendChild(a); a.select(); a.setSelectionRange(0, t.length);
-  let ok = false; try { ok = document.execCommand("copy"); } catch(e) {}
-  a.remove(); return ok;
-}
+
 function copyText(t){
-  try {
-    if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(t).catch(() => legacyCopy(t)); return true; }
-  } catch(e) {}
-  return legacyCopy(t);
-}
-$("ig").addEventListener("click", e => {
-  if(!selDate || !selTime){ e.preventDefault(); return; }
-  $("hint").textContent = copyText(buildReply()) ? "Your reply is copied. Just paste it into the chat." : "Please type your reply in the chat.";
-});
-</script>
-</body>
-</html>
+  const a = document.createElement("textarea");
+  a.value = t;
+  a.setAttribute("readonly", "");
+  a.style.cssText = "position:fixed;top:0;left:0;opacity:0;font-size:16px";
+  document.
