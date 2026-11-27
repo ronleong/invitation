@@ -19,26 +19,27 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 button,.btn,.env{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button{-webkit-appearance:none;appearance:none}
 body{margin:0;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-weight:400;color:var(--ink);background:radial-gradient(ellipse at 50% 0%,var(--bg2),var(--bg) 70%);padding:20px;overflow-x:hidden}
 .hidden{display:none!important}
 .petal{position:fixed;top:-20px;width:10px;height:14px;border-radius:50% 0 50% 0;pointer-events:none;animation:fall linear forwards;z-index:20;opacity:.85}
 @keyframes fall{to{transform:translate(var(--dx),110vh) rotate(540deg)}}
 
 /* envelope */
-#envStage{text-align:center;transition:opacity .6s,transm .6s}
-#envStage.leave{opacity:0;transm:translateY(12px) scale(.96)}
-.env{position:relative;width:min(320px,84vw);height:210px;margin:90px auto 0;cursor:pointer;filter:drop-shadow(0 18px 22px #00000030);transition:transm .4s;animation:float 3s ease-in-out infinite}
-@keyframes float{50%{transm:translateY(-6px)}}
+#envStage{text-align:center;transition:opacity .6s,transform .6s}
+#envStage.leave{opacity:0;transform:translateY(12px) scale(.96)}
+.env{position:relative;width:min(320px,84vw);height:210px;margin:90px auto 0;cursor:pointer;filter:drop-shadow(0 18px 22px #00000030);transition:transform .4s;animation:float 3s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-6px)}}
 .env.open{animation:none}
 .env>div{position:absolute;left:0;right:0}
 .back{top:0;bottom:0;background:var(--env2);border-radius:8px;z-index:1}
-.letter{left:6%!important;right:6%!important;top:8px;height:88%;background:var(--paper);z-index:2;padding:16px 10px;text-align:center;font-family:var(--serif);font-size:1.45rem;font-style:italic;color:#4a3340;transition:transm .8s .5s;box-shadow:0 1px 6px #0002}
-.letter small{display:block;font-family:var(--sans);font-style:normal;font-size:.62rem;letter-spacing:.3em;text-transm:uppercase;color:#e58aa0;margin-top:6px}
-.front{top:0;bottom:0;background:linear-gradient(var(--env),var(--env2));border-radius:8px;z-index:3;clip-path:polygon(0 0,50% 58%,100% 0,100% 100%,0 100%)}
+.letter{left:6%!important;right:6%!important;top:8px;height:88%;background:var(--paper);z-index:2;padding:16px 10px;text-align:center;font-family:var(--serif);font-size:1.45rem;font-style:italic;color:#4a3340;transition:transform .8s .5s;box-shadow:0 1px 6px #0002}
+.letter small{display:block;font-family:var(--sans);font-style:normal;font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:#e58aa0;margin-top:6px}
+.front{top:0;bottom:0;background:linear-gradient(var(--env),var(--env2));border-radius:8px;z-index:3;-webkit-clip-path:polygon(0 0,50% 58%,100% 0,100% 100%,0 100%);clip-path:polygon(0 0,50% 58%,100% 0,100% 100%,0 100%)}
 .addr{bottom:18px;left:0!important;right:0!important;z-index:3;text-align:center;color:#7a5560}
-.addr small{display:block;font-size:.58rem;letter-spacing:.3em;text-transm:uppercase;opacity:.7}
+.addr small{display:block;font-size:.58rem;letter-spacing:.3em;text-transform:uppercase;opacity:.7}
 .addr b{font-family:var(--serif);font-size:1.3rem;font-style:italic;font-weight:500}
-.flap{top:0;height:58%;background:linear-gradient(var(--env2),var(--env));z-index:4;clip-path:polygon(0 0,100% 0,50% 100%);transm-origin:top;transition:transform .7s,z-index 0s .35s;border-radius:8px 8px 0 0}
+.flap{top:0;height:58%;background:linear-gradient(var(--env2),var(--env));z-index:4;-webkit-clip-path:polygon(0 0,100% 0,50% 100%);clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .7s,z-index 0s .35s;border-radius:8px 8px 0 0}
 .seal{top:calc(58% - 24px)!important;left:50%!important;right:auto!important;width:48px;height:48px;margin-left:-24px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f59ab0,#cf5673);color:#fff4e0;display:flex;align-items:center;justify-content:center;z-index:5;font-family:var(--serif);font-size:1.4rem;box-shadow:0 3px 8px #0006,inset 0 0 0 3px #ffffff1c;transition:opacity .3s}
 .env.open .flap{transform:rotateX(180deg);z-index:1}
 .env.open .seal{opacity:0}
@@ -48,7 +49,7 @@ body{margin:0;min-height:100vh;min-height:100dvh;display:flex;align-items:center
 
 /* card */
 .card{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:30px;padding:34px 26px 30px;text-align:center;position:relative;box-shadow:0 24px 60px #e5708c2e;animation:rise .9s ease}
-.card:before{content:"";position:absolute;inset:9px;border:1.5px dashed var(--line);border-radius:22px;pointer-events:none}
+.card:before{content:"";position:absolute;top:9px;left:9px;right:9px;bottom:9px;border:1.5px dashed var(--line);border-radius:22px;pointer-events:none}
 @keyframes rise{from{opacity:0;transform:translateY(28px)}}
 .bubble{position:relative;box-shadow:0 3px 8px #e5708c1f;display:inline-block;background:var(--bubble);border:1px solid var(--line);padding:6px 16px;font-family:var(--serif);font-style:italic;font-size:1.05rem;border-radius:18px;margin-bottom:10px;transition:all .3s}
 .bubble:after{content:"";position:absolute;left:50%;bottom:-6px;width:10px;height:10px;margin-left:-5px;background:var(--bubble);border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg)}
@@ -114,12 +115,12 @@ select:focus{outline:none;border-color:var(--gold)}
 </div>
 
 <div class="card hidden" id="card">
-  <div class="bubble" id="bubble">Ron has a question for you.</div>
+  <div class="bubble" id="bubble">Someone has a question for you.</div>
   <svg class="mascot" viewBox="0 0 200 190" aria-label="A fluffy white bichon in a floral collar">
     <ellipse cx="100" cy="182" rx="62" ry="5" fill="#00000014"/>
     <g class="dogbody">
-      <circle class="tail" cx="146" cy="146" r="12" fill="var(--fur)" stroke="var(--gold)" stroke-width="1.6"/>
-      <g fill="var(--fur)" stroke="var(--gold)" stroke-width="1.6">
+      <circle class="tail" cx="146" cy="146" r="12" fill="#fffdf9" style="stroke:var(--gold)" stroke-width="1.6"/>
+      <g fill="#fffdf9" style="stroke:var(--gold)" stroke-width="1.6">
         <ellipse cx="100" cy="146" rx="44" ry="31"/><circle cx="76" cy="170" r="13"/><circle cx="124" cy="170" r="13"/>
       </g>
       <!-- floral collar -->
@@ -134,12 +135,12 @@ select:focus{outline:none;border-color:var(--gold)}
       </g>
       <g fill="#fff" stroke="#d8cdb8" stroke-width=".8"><circle cx="116" cy="146" r="1.9"/><circle cx="119" cy="152" r="1.9"/><circle cx="117" cy="158" r="1.9"/></g>
       <!-- fluffy round head -->
-      <g fill="var(--fur)" stroke="var(--gold)" stroke-width="1.6">
+      <g fill="#fffdf9" style="stroke:var(--gold)" stroke-width="1.6">
         <circle cx="52" cy="74" r="23"/><circle cx="148" cy="74" r="23"/><circle cx="58" cy="44" r="23"/><circle cx="142" cy="44" r="23"/>
         <circle cx="80" cy="26" r="23"/><circle cx="120" cy="26" r="23"/><circle cx="100" cy="22" r="23"/>
         <circle cx="58" cy="102" r="21"/><circle cx="142" cy="102" r="21"/>
       </g>
-      <circle cx="100" cy="68" r="47" fill="var(--fur)"/><circle cx="100" cy="86" r="40" fill="var(--fur)"/>
+      <circle cx="100" cy="68" r="47" fill="#fffdf9"/><circle cx="100" cy="86" r="40" fill="#fffdf9"/>
       <g stroke="#eadfcf" stroke-width="1.4" fill="none" stroke-linecap="round"><path d="M78 30q8 7 18 2"/><path d="M106 28q9 6 18 0"/><path d="M52 56q3 9 11 12"/><path d="M148 56q-3 9 -11 12"/></g>
       <ellipse cx="100" cy="98" rx="20" ry="14" fill="#fffefc"/>
       <circle cx="79" cy="77" r="8" fill="#1d2631" opacity=".12"/><circle cx="121" cy="77" r="8" fill="#1d2631" opacity=".12"/>
@@ -153,7 +154,7 @@ select:focus{outline:none;border-color:var(--gold)}
     <g class="sparkle" fill="#f5b942"><path d="M24 40 l2.5 7 7 2.5 -7 2.5 -2.5 7 -2.5-7 -7-2.5 7-2.5z"/><path d="M172 24 l2.5 7 7 2.5 -7 2.5 -2.5 7 -2.5-7 -7-2.5 7-2.5z"/><path d="M178 118 l2 5 5 2 -5 2 -2 5 -2-5 -5-2 5-2z"/></g>
   </svg>
 
-  <div class="eyebrow">✿ Sushi invitation ✿</div>
+  <div class="eyebrow">✿ An invitation ✿</div>
 
   <div id="ask">
     <h1>Dinner, <em id="name"></em>?</h1>
@@ -191,7 +192,7 @@ select:focus{outline:none;border-color:var(--gold)}
 const CONFIG = {
   herName: "YiHwa",
   initial: "❖",                      // letter on the wax seal, e.g. your initial
-  dmLink: "https://ig.me",
+  dmLink: "https://ig.me/m/ronnn.leong",
   month: 11, year: 2026,             // 11 = December (0 = January)
   startHour: 11, endHour: 19, stepMinutes: 30,   // 11 AM to 7 PM
   where: "Tono Izayaki",
@@ -199,7 +200,7 @@ const CONFIG = {
 };
 
 const $ = id => document.getElementById(id);
-["name","YiHwa"].forEach(i => $(i).textContent = CONFIG.herName);
+["name","envName"].forEach(i => $(i).textContent = CONFIG.herName);
 $("seal").textContent = CONFIG.initial;
 $("d-date").textContent = "To be chosen"; $("d-time").textContent = "To be chosen";
 $("d-where").textContent = CONFIG.where;
@@ -309,8 +310,22 @@ yes.addEventListener("click", () => {
   $("ask").classList.add("hidden"); $("done").classList.remove("hidden");
   petals(26);
 });
-$("ig").addEventListener("click", () => {
-  try { navigator.clipboard.writeText(buildReply()); $("hint").textContent = "Your reply is copied. Just paste it into the chat."; } catch(e) {}
+function legacyCopy(t){
+  const a = document.createElement("textarea");
+  a.value = t; a.setAttribute("readonly", ""); a.style.cssText = "position:fixed;top:0;left:0;opacity:0;font-size:16px";
+  document.body.appendChild(a); a.select(); a.setSelectionRange(0, t.length);
+  let ok = false; try { ok = document.execCommand("copy"); } catch(e) {}
+  a.remove(); return ok;
+}
+function copyText(t){
+  try {
+    if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(t).catch(() => legacyCopy(t)); return true; }
+  } catch(e) {}
+  return legacyCopy(t);
+}
+$("ig").addEventListener("click", e => {
+  if(!selDate || !selTime){ e.preventDefault(); return; }
+  $("hint").textContent = copyText(buildReply()) ? "Your reply is copied. Just paste it into the chat." : "Please type your reply in the chat.";
 });
 </script>
 </body>
