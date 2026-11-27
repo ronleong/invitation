@@ -188,8 +188,6 @@ h1{font-family:var(--serif);font-weight:600;font-size:2.02rem;line-height:1.15;m
 h1 em{font-style:italic;color:var(--gold)}
 .rule{width:56px;height:0;border-top:3px dotted var(--gold);margin:14px auto}
 p{margin:0;font-size:.96rem;line-height:1.6;color:var(--muted)}
-.menu{margin-top:18px;font-size:.64rem;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--ink)}
-.menu i{color:var(--gold);font-style:normal;margin:0 6px}
 .sign{margin-top:14px;font-family:var(--serif);font-style:italic;font-size:1.08rem;color:var(--accent-deep)}
 
 .btns{position:relative;height:148px;margin-top:18px}
@@ -205,11 +203,6 @@ button,.btn{
   box-shadow:0 8px 18px #d95b7945;
 }
 .primary:hover{filter:brightness(1.04);transform:translateY(-1px)}
-.secondary{
-  background:var(--field);color:var(--ink);border:1.5px solid var(--border-strong);
-  border-radius:999px;padding:12px 18px;font-size:.66rem;letter-spacing:.16em;
-}
-.secondary:hover{background:var(--field-hover);border-color:var(--gold)}
 #yes{position:absolute;left:50%;top:0;transform:translateX(-50%) scale(1);transform-origin:center top;white-space:nowrap}
 .ghost{
   position:absolute;border-radius:999px;background:var(--field);
@@ -319,7 +312,7 @@ select option{
   padding-bottom:1px;
 }
 
-.chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:14px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:18px}
 .chip{
   border-radius:999px;padding:7px 14px;background:var(--card);
   color:var(--ink);border:1.5px solid var(--border-strong);
@@ -328,24 +321,14 @@ select option{
 .chip:hover{background:var(--field-hover);border-color:var(--gold)}
 .chip.on{background:var(--btn);border-color:var(--btn);color:var(--btntext)}
 
-.note-input{
-  width:100%;padding:11px 14px;border-radius:14px;
-  border:1.5px solid var(--border-strong);background:var(--card);color:var(--ink);
-  font-family:var(--sans);font-size:.88rem;font-weight:600;margin-bottom:16px;
-}
-.note-input::placeholder{color:var(--muted);font-weight:400}
-.note-input:focus{outline:none;border-color:var(--btn);box-shadow:0 0 0 3px #d95b7926}
-
 .actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
 .actions .primary{flex:1 1 200px}
-.actions .secondary{flex:0 1 auto}
-.small{font-size:.84rem;color:var(--muted);margin-top:12px;font-style:italic;font-family:var(--serif);min-height:1.2em}
 
 .bow{position:absolute;top:-17px;left:50%;margin-left:-30px;width:60px;height:34px;z-index:2;filter:drop-shadow(0 3px 4px #d95b7945)}
 .bow svg{width:100%;height:100%;display:block}
 .bow path,.bow circle{fill:var(--btn)}
 .bow circle{stroke:#ffffff77;stroke-width:1.5}
-.primary.disabled,.secondary.disabled{opacity:.42;pointer-events:none}
+.primary.disabled{opacity:.42;pointer-events:none}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
@@ -421,8 +404,8 @@ select option{
   <div id="ask">
     <h1>Hey <em id="name"></em>,</h1>
     <div class="rule"></div>
-    <p id = "sub"></p>Join me for a cozy sushi dinner? Good food, zero rush, and a great evening ahead.</p>
-    <div class="sign">Warmly, <span id="from"></span> </div>
+    <p id="sub">Join me for a cozy sushi dinner? Good food, zero rush, and a great evening ahead.</p>
+    <div class="sign">Warmly, <span id="from"></span> ✿</div>
     <div class="btns" id="btns">
       <button class="primary" id="yes">Count me in</button>
       <button class="ghost" id="no">Maybe next time</button>
@@ -479,12 +462,9 @@ select option{
     <div class="section-label"><span>2. Cravings &amp; Favourites</span><small>Optional</small></div>
     <div class="chips" id="chips"></div>
 
-    
     <div class="actions">
-      <a class="btn primary disabled" id="ig" href="#" target="_blank" rel="noopener">Send on Instagram</a>
-     
+      <a class="btn primary disabled" id="ig" href="https://ig.me/m/ronnn.leong" rel="noopener">Send on Instagram</a>
     </div>
-
   </div>
 </div>
 
@@ -509,8 +489,14 @@ const $ = id => document.getElementById(id);
 $("seal").textContent = CONFIG.initial;
 $("d-where").textContent = CONFIG.where;
 $("from").textContent = CONFIG.fromName;
-const onPC = window.matchMedia("(hover:hover) and (pointer:fine)").matches;
-$("ig").href = onPC ? CONFIG.profileLink : CONFIG.dmLink;
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+$("ig").href = isMobile ? CONFIG.dmLink : CONFIG.profileLink;
+if (!isMobile) {
+  $("ig").setAttribute("target", "_blank");
+  $("ig").setAttribute("rel", "noopener noreferrer");
+} else {
+  $("ig").removeAttribute("target");
+}
 
 /* petals */
 function petals(n){
@@ -620,8 +606,6 @@ const fmtLongDate = d => d.toLocaleDateString("en-GB", {weekday:"long", day:"num
 function buildReply(){
   let m = `Count me in for sushi at ${CONFIG.where} on ${fmtLongDate(selDate)} at ${selTime}!`;
   if(picked.size) m += ` Definitely saving room for: ${[...picked].join(", ")}.`;
-  const note = $("noteInput").value.trim();
-  if(note) m += ` Note: ${note}`;
   return m;
 }
 
@@ -741,16 +725,10 @@ function refresh(){
 
   const ready = Boolean(selDate && selTime);
   $("ig").classList.toggle("disabled", !ready);
-  $("copyBtn").classList.toggle("disabled", !ready);
   $("calLink").classList.toggle("hidden", !ready);
 
   if(ready){
     $("calLink").href = buildICS(selDate, selTime);
-    $("hint").textContent = onPC
-      ? "All set! Copy your note or open Instagram to paste it in chat."
-      : "All set! Tap Send on Instagram — your reply copies automatically.";
-  } else {
-    $("hint").textContent = "Select a date and time above to unlock your RSVP.";
   }
 }
 
@@ -786,18 +764,9 @@ function copyText(t){
   return ok;
 }
 
-$("copyBtn").addEventListener("click", () => {
-  if(!selDate || !selTime) return;
-  const ok = copyText(buildReply());
-  $("copyBtn").textContent = ok ? "Copied ✓" : "Copy note";
-  $("hint").textContent = ok ? "Copied to clipboard! Paste it straight into Instagram." : "Copy your note and send it in chat.";
-  setTimeout(() => { $("copyBtn").textContent = "Copy note"; }, 2500);
-});
-
 $("ig").addEventListener("click", e => {
   if(!selDate || !selTime){ e.preventDefault(); return; }
-  const ok = copyText(buildReply());
-  $("hint").textContent = ok ? "Reply copied! Just hit paste in our DM." : "Opening Instagram—type your time in chat!";
+  copyText(buildReply());
 });
 </script>
 </body>
