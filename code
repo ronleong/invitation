@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>An Invitation</title>
+<meta name="theme-color" content="#fff3ee">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta property="og:title" content="An Invitation">
+<meta property="og:description" content="Someone has a question for you.">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff3ee;--bg2:#ffdfe0;--card:#fffaf7;--ink:#4a3340;--muted:#8a7480;--gold:#e58aa0;--line:#f4cfd3;--paper:#fffdf9;--env:#ffd9cf;--env2:#f7bfb0;--btn:#e5708c;--btntext:#ffffff;--fur:#fffdf9;--bubble:#ffeceb;
+--serif:'Fraunces',Georgia,'Times New Roman',serif;--sans:'Nunito','Helvetica Neue',Arial,sans-serif;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2a1c26;--bg2:#3a2433;--card:#3b2735;--ink:#ffeaf0;--muted:#cdb0bc;--gold:#f09ab0;--line:#5a3b4e;--btn:#f09ab0;--btntext:#3a1f2c;--bubble:#4a3042}}
+:root[data-theme="dark"]{--bg:#2a1c26;--bg2:#3a2433;--card:#3b2735;--ink:#ffeaf0;--muted:#cdb0bc;--gold:#f09ab0;--line:#5a3b4e;--btn:#f09ab0;--btntext:#3a1f2c;--bubble:#4a3042}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+button,.btn,.env{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+body{margin:0;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-weight:400;color:var(--ink);background:radial-gradient(ellipse at 50% 0%,var(--bg2),var(--bg) 70%);padding:20px;overflow-x:hidden}
+.hidden{display:none!important}
+.petal{position:fixed;top:-20px;width:10px;height:14px;border-radius:50% 0 50% 0;pointer-events:none;animation:fall linear forwards;z-index:20;opacity:.85}
+@keyframes fall{to{transform:translate(var(--dx),110vh) rotate(540deg)}}
+
+/* envelope */
+#envStage{text-align:center;transition:opacity .6s,transform .6s}
+#envStage.leave{opacity:0;transform:translateY(12px) scale(.96)}
+.env{position:relative;width:min(320px,84vw);height:210px;margin:90px auto 0;cursor:pointer;filter:drop-shadow(0 18px 22px #00000030);transition:transform .4s;animation:float 3s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-6px)}}
+.env.open{animation:none}
+.env>div{position:absolute;left:0;right:0}
+.back{top:0;bottom:0;background:var(--env2);border-radius:8px;z-index:1}
+.letter{left:6%!important;right:6%!important;top:8px;height:88%;background:var(--paper);z-index:2;padding:16px 10px;text-align:center;font-family:var(--serif);font-size:1.45rem;font-style:italic;color:#4a3340;transition:transform .8s .5s;box-shadow:0 1px 6px #0002}
+.letter small{display:block;font-family:var(--sans);font-style:normal;font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:#e58aa0;margin-top:6px}
+.front{top:0;bottom:0;background:linear-gradient(var(--env),var(--env2));border-radius:8px;z-index:3;clip-path:polygon(0 0,50% 58%,100% 0,100% 100%,0 100%)}
+.addr{bottom:18px;left:0!important;right:0!important;z-index:3;text-align:center;color:#7a5560}
+.addr small{display:block;font-size:.58rem;letter-spacing:.3em;text-transform:uppercase;opacity:.7}
+.addr b{font-family:var(--serif);font-size:1.3rem;font-style:italic;font-weight:500}
+.flap{top:0;height:58%;background:linear-gradient(var(--env2),var(--env));z-index:4;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .7s,z-index 0s .35s;border-radius:8px 8px 0 0}
+.seal{top:calc(58% - 24px)!important;left:50%!important;right:auto!important;width:48px;height:48px;margin-left:-24px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f59ab0,#cf5673);color:#fff4e0;display:flex;align-items:center;justify-content:center;z-index:5;font-family:var(--serif);font-size:1.4rem;box-shadow:0 3px 8px #0006,inset 0 0 0 3px #ffffff1c;transition:opacity .3s}
+.env.open .flap{transform:rotateX(180deg);z-index:1}
+.env.open .seal{opacity:0}
+.env.open .letter{transform:translateY(-105px)}
+.tap{margin-top:46px;font-size:.7rem;letter-spacing:.35em;text-transform:uppercase;color:var(--muted);animation:pulse 2s infinite}
+@keyframes pulse{50%{opacity:.35}}
+
+/* card */
+.card{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:30px;padding:34px 26px 30px;text-align:center;position:relative;box-shadow:0 24px 60px #e5708c2e;animation:rise .9s ease}
+.card:before{content:"";position:absolute;inset:9px;border:1.5px dashed var(--line);border-radius:22px;pointer-events:none}
+@keyframes rise{from{opacity:0;transform:translateY(28px)}}
+.bubble{position:relative;box-shadow:0 3px 8px #e5708c1f;display:inline-block;background:var(--bubble);border:1px solid var(--line);padding:6px 16px;font-family:var(--serif);font-style:italic;font-size:1.05rem;border-radius:18px;margin-bottom:10px;transition:all .3s}
+.bubble:after{content:"";position:absolute;left:50%;bottom:-6px;width:10px;height:10px;margin-left:-5px;background:var(--bubble);border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg)}
+.mascot{width:190px;height:180px;display:block;margin:0 auto 4px;overflow:visible}
+.dogbody{animation:bob 3s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-4px)}}
+.eye{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
+@keyframes blink{0%,95%,100%{transform:scaleY(1)}97.5%{transform:scaleY(.1)}}
+.tail{transform-box:fill-box;transform-origin:left center;animation:wag 1.6s ease-in-out infinite}
+@keyframes wag{50%{transform:rotate(16deg)}}
+.tongue{transform-box:fill-box;transform-origin:top;animation:pant 1.4s ease-in-out infinite}
+@keyframes pant{50%{transform:scaleY(1.12)}}
+.brow,.sparkle{display:none}
+.sad .brow{display:block}.sad .tongue{display:none}
+.happy .sparkle{display:block}.happy .tail{animation-duration:.3s}
+.happy .dogbody{animation:jump .7s ease-in-out infinite}
+@keyframes jump{50%{transform:translateY(-12px)}}
+.eyebrow{font-size:.66rem;letter-spacing:.38em;text-transform:uppercase;color:var(--gold);margin-top:6px}
+h1{font-family:var(--serif);font-weight:500;font-size:2.15rem;line-height:1.15;margin:12px 0 0}
+h1 em{font-style:italic;color:var(--gold)}
+.rule{width:64px;height:0;border-top:3px dotted var(--gold);margin:18px auto}
+p{margin:0;font-size:.98rem;line-height:1.65;color:var(--muted)}
+.menu{margin-top:20px;font-size:.66rem;letter-spacing:.28em;text-transform:uppercase;color:var(--ink);opacity:.75}
+.menu i{color:var(--gold);font-style:normal;margin:0 6px}
+.btns{position:relative;height:160px;margin-top:20px}
+button,.btn{font-family:var(--sans);font-size:.76rem;font-weight:400;letter-spacing:.28em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .25s}
+.primary{background:var(--btn);color:var(--btntext);border:1px solid var(--btn);border-radius:999px;padding:15px 38px;display:inline-block;box-shadow:0 8px 18px #e5708c40}
+#yes{position:absolute;left:50%;top:0;transform:translateX(-50%) scale(1);transform-origin:center top;white-space:nowrap}
+.ghost{position:absolute;border-radius:999px;background:var(--bubble);border:1px solid var(--line);color:var(--muted);padding:11px 20px;font-size:.68rem;white-space:nowrap;transition:left .35s cubic-bezier(.3,1.5,.5,1),top .35s cubic-bezier(.3,1.5,.5,1)}
+
+/* done */
+.ticket{margin:24px 0 8px;border:1.5px dashed var(--line);border-radius:18px;padding:6px 16px;text-align:left}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:11px 2px}
+.row+.row{border-top:1px solid var(--line)}
+.row b{font-weight:400;font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.row span{font-family:var(--serif);font-size:1.15rem;text-align:right}
+.count{font-family:var(--serif);font-style:italic;color:var(--gold);font-size:1.15rem;margin:14px 0 6px}
+.pick{font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);margin:20px 0 10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:26px}
+.chip{border-radius:999px;padding:8px 14px;background:none;color:var(--muted);border:1px solid var(--line);font-size:.62rem;letter-spacing:.18em}
+.chip:hover{border-color:var(--gold)}
+.chip.on{background:var(--gold);border-color:var(--gold);color:#fff}
+.small{font-size:.8rem;color:var(--muted);margin-top:14px;font-style:italic;font-family:var(--serif)}
+label.pick{display:block}
+select{display:block;width:100%;margin:0 0 14px;padding:14px 42px 14px 16px;font-family:var(--serif);font-size:1.15rem;color:var(--ink);background:var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23e58aa0' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 16px center;border:1px solid var(--line);border-radius:14px;-webkit-appearance:none;appearance:none;text-align:left}
+select:focus{outline:none;border-color:var(--gold)}
+.primary.disabled{opacity:.35;pointer-events:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+
+<div id="envStage">
+  <div class="env" id="env" role="button" aria-label="Open the envelope" tabindex="0">
+    <div class="back"></div>
+    <div class="letter">You are invited<small>Dinner</small></div>
+    <div class="front"></div>
+    <div class="addr"><small>For</small><b id="envName"></b></div>
+    <div class="flap"></div>
+    <div class="seal" id="seal"></div>
+  </div>
+  <div class="tap" id="tap">Tap to open</div>
+</div>
+
+<div class="card hidden" id="card">
+  <div class="bubble" id="bubble">Someone has a question for you.</div>
+  <svg class="mascot" viewBox="0 0 200 190" aria-label="A fluffy white bichon in a floral collar">
+    <ellipse cx="100" cy="182" rx="62" ry="5" fill="#00000014"/>
+    <g class="dogbody">
+      <circle class="tail" cx="146" cy="146" r="12" fill="var(--fur)" stroke="var(--gold)" stroke-width="1.6"/>
+      <g fill="var(--fur)" stroke="var(--gold)" stroke-width="1.6">
+        <ellipse cx="100" cy="146" rx="44" ry="31"/><circle cx="76" cy="170" r="13"/><circle cx="124" cy="170" r="13"/>
+      </g>
+      <!-- floral collar -->
+      <path d="M52 112 Q100 96 148 112 Q150 128 138 134 Q100 120 62 134 Q50 128 52 112Z" fill="#f4b9a3" stroke="#e6a38b" stroke-width="1"/>
+      <path d="M56 116 Q60 126 58 131 M68 112 Q72 124 70 129 M144 116 Q140 126 142 131 M132 112 Q128 124 130 129" stroke="#e6a38b" stroke-width=".8" fill="none" opacity=".7"/>
+      <path d="M70 118 Q100 150 130 118 L124 132 Q100 156 76 132Z" fill="#fbe9df" stroke="#e6a38b" stroke-width="1"/>
+      <g><circle cx="80" cy="128" r="2.6" fill="#e88aa0"/><circle cx="90" cy="138" r="2.4" fill="#f2c36b"/><circle cx="112" cy="138" r="2.6" fill="#e88aa0"/><circle cx="121" cy="127" r="2.4" fill="#f2c36b"/>
+      <ellipse cx="86" cy="143" rx="3" ry="1.5" fill="#a9cba6" transform="rotate(-25 86 143)"/><ellipse cx="115" cy="143" rx="3" ry="1.5" fill="#a9cba6" transform="rotate(25 115 143)"/></g>
+      <g transform="translate(100 134)" fill="#fff" stroke="#e3d6c8" stroke-width="1.2">
+        <circle cx="0" cy="-8" r="7"/><circle cx="8" cy="-2" r="7"/><circle cx="5" cy="7" r="7"/><circle cx="-5" cy="7" r="7"/><circle cx="-8" cy="-2" r="7"/>
+        <circle r="3.6" fill="#e9d7a8" stroke="#c9a96a"/>
+      </g>
+      <g fill="#fff" stroke="#d8cdb8" stroke-width=".8"><circle cx="116" cy="146" r="1.9"/><circle cx="119" cy="152" r="1.9"/><circle cx="117" cy="158" r="1.9"/></g>
+      <!-- fluffy round head -->
+      <g fill="var(--fur)" stroke="var(--gold)" stroke-width="1.6">
+        <circle cx="52" cy="74" r="23"/><circle cx="148" cy="74" r="23"/><circle cx="58" cy="44" r="23"/><circle cx="142" cy="44" r="23"/>
+        <circle cx="80" cy="26" r="23"/><circle cx="120" cy="26" r="23"/><circle cx="100" cy="22" r="23"/>
+        <circle cx="58" cy="102" r="21"/><circle cx="142" cy="102" r="21"/>
+      </g>
+      <circle cx="100" cy="68" r="47" fill="var(--fur)"/><circle cx="100" cy="86" r="40" fill="var(--fur)"/>
+      <g stroke="#eadfcf" stroke-width="1.4" fill="none" stroke-linecap="round"><path d="M78 30q8 7 18 2"/><path d="M106 28q9 6 18 0"/><path d="M52 56q3 9 11 12"/><path d="M148 56q-3 9 -11 12"/></g>
+      <ellipse cx="100" cy="98" rx="20" ry="14" fill="#fffefc"/>
+      <circle cx="79" cy="77" r="8" fill="#1d2631" opacity=".12"/><circle cx="121" cy="77" r="8" fill="#1d2631" opacity=".12"/>
+      <circle class="eye" cx="79" cy="77" r="5.4" fill="#1d2631"/><circle cx="81" cy="75" r="1.8" fill="#fff"/>
+      <circle class="eye" cx="121" cy="77" r="5.4" fill="#1d2631"/><circle cx="123" cy="75" r="1.8" fill="#fff"/>
+      <path class="brow" d="M68 64 Q78 60 88 68 M132 64 Q122 60 112 68" stroke="#1d2631" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M91 96 Q100 88 109 96 Q109 105 100 106 Q91 105 91 96Z" fill="#1d2631"/><ellipse cx="96.5" cy="94.5" rx="3.2" ry="1.6" fill="#fff" opacity=".55"/>
+      <path d="M100 105 V109 M91 108 Q96 113 100 109 Q104 113 109 108" stroke="#1d2631" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      <path class="tongue" d="M101 111 Q114 110 113 121 Q110 130 103 124 Q100 118 101 111Z" fill="#f19aa8"/>
+    </g>
+    <g class="sparkle" fill="#f5b942"><path d="M24 40 l2.5 7 7 2.5 -7 2.5 -2.5 7 -2.5-7 -7-2.5 7-2.5z"/><path d="M172 24 l2.5 7 7 2.5 -7 2.5 -2.5 7 -2.5-7 -7-2.5 7-2.5z"/><path d="M178 118 l2 5 5 2 -5 2 -2 5 -2-5 -5-2 5-2z"/></g>
+  </svg>
+
+  <div class="eyebrow">✿ An invitation ✿</div>
+
+  <div id="ask">
+    <h1>Dinner, <em id="name"></em>?</h1>
+    <div class="rule"></div>
+    <p id="sub">An evening of fresh sushi, good conversation and no agenda. I would love for you to join me.</p>
+    <div class="menu">Omakase<i>·</i>Nigiri<i>·</i>Maki<i>·</i>Matcha</div>
+    <div class="btns" id="btns">
+      <button class="primary" id="yes">Accept</button>
+      <button class="ghost" id="no">Decline</button>
+    </div>
+  </div>
+
+  <div id="done" class="hidden">
+    <h1>Wonderful.</h1>
+    <div class="rule"></div>
+    <p>Choose whichever date and time suit you best.</p>
+    <label class="pick" for="dateSel">Date</label><select id="dateSel"><option value="">Choose a date</option></select>
+    <label class="pick" for="timeSel">Time</label><select id="timeSel"><option value="">Choose a time</option></select>
+    <div class="ticket">
+      <div class="row"><b>Date</b><span id="d-date"></span></div>
+      <div class="row"><b>Time</b><span id="d-time"></span></div>
+      <div class="row"><b>Venue</b><span id="d-where"></span></div>
+      
+    </div>
+    <div class="count" id="count"></div>
+    <div class="pick">Any favourites I should know about?</div>
+    <div class="chips" id="chips"></div>
+    <a class="btn primary" id="ig" href="#" target="_blank" rel="noopener">Reply on Instagram</a>
+    <div class="small" id="hint">Choose a date and time first, then one tap opens our chat and copies your reply.</div>
+  </div>
+</div>
+
+<script>
+/* EDIT THESE */
+const CONFIG = {
+  herName: "Name",
+  initial: "❖",                      // letter on the wax seal, e.g. your initial
+  dmLink: "https://www.instagram.com/direct/t/101496751251219/",
+  month: 11, year: 2026,             // 11 = December (0 = January)
+  startHour: 11, endHour: 19, stepMinutes: 30,   // 11 AM to 7 PM
+  where: "Tono Izayaki",
+  favourites: ["Salmon", "Ebi", "Tamago", "Maki", "Tuna", "Matcha ice cream"]
+};
+
+const $ = id => document.getElementById(id);
+["name","envName"].forEach(i => $(i).textContent = CONFIG.herName);
+$("seal").textContent = CONFIG.initial;
+$("d-date").textContent = "To be chosen"; $("d-time").textContent = "To be chosen";
+$("d-where").textContent = CONFIG.where;
+$("ig").href = CONFIG.dmLink;
+
+/* petals */
+function petals(n){
+  const cols = ["#f6b4c3","#ffd9cf","#ffe3a3","#f2a9b8"];
+  for(let i=0;i<n;i++){
+    const p = document.createElement("span"); p.className = "petal";
+    p.style.left = Math.random()*100 + "vw"; p.style.background = cols[i % cols.length];
+    p.style.setProperty("--dx", (Math.random()*140 - 70) + "px");
+    p.style.animationDuration = (3.5 + Math.random()*3) + "s"; p.style.animationDelay = (Math.random()*1.4) + "s";
+    document.body.appendChild(p); setTimeout(() => p.remove(), 8500);
+  }
+}
+
+/* open envelope */
+const env = $("env"); let opened = false;
+function openEnv(){
+  if(opened) return; opened = true;
+  env.classList.add("open"); $("tap").classList.add("hidden");
+  setTimeout(() => $("envStage").classList.add("leave"), 1700);
+  setTimeout(() => { $("envStage").classList.add("hidden"); $("card").classList.remove("hidden"); petals(10); }, 2300);
+}
+env.addEventListener("click", openEnv);
+env.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); openEnv(); } });
+
+/* playful decline: it politely slips away */
+const card = $("card"), no = $("no"), yes = $("yes"), btns = $("btns"), bubble = $("bubble");
+const pleas = ["Are you certain?","Do reconsider","Truly?","Please?","Last chance","Just say yes"];
+const bubbles = ["Hmm?","Are you sure?","Please say yes?","*hopeful look*","Pretty please?"];
+let tries = 0, scale = 1;
+function placeNo(){
+  const b = btns.getBoundingClientRect(), n = no.getBoundingClientRect();
+  const top = 86 + Math.random() * Math.max(0, b.height - 86 - n.height);
+  no.style.left = (Math.random() * Math.max(0, b.width - n.width)) + "px";
+  no.style.top = top + "px";
+}
+function dodge(e){
+  e.preventDefault();
+  no.textContent = pleas[Math.min(tries, pleas.length - 1)];
+  bubble.textContent = bubbles[tries % bubbles.length];
+  tries++; scale = Math.min(scale + 0.1, 1.45);
+  yes.style.transform = "translateX(-50%) scale(" + scale + ")";
+  card.classList.add("sad");
+  $("sub").textContent = "Look at those drooping ears. Surely you can’t say no to that face.";
+  placeNo();
+}
+no.style.left = "calc(50% - 50px)"; no.style.top = "92px";
+["mouseenter","touchstart","click"].forEach(ev => no.addEventListener(ev, dodge, {passive:false}));
+
+/* favourites + reply */
+const picked = new Set();
+function buildReply(){
+  let m = "I’d love to join you for sushi dinner on " + fmtDate(selDate) + " at " + selTime + ".";
+  if(picked.size) m += " My favourites: " + [...picked].join(", ") + ".";
+  return m;
+}
+CONFIG.favourites.forEach(f => {
+  const c = document.createElement("button"); c.className = "chip"; c.textContent = f;
+  c.addEventListener("click", () => { picked.has(f) ? picked.delete(f) : picked.add(f); c.classList.toggle("on"); });
+  $("chips").appendChild(c);
+});
+
+let selDate = null, selTime = null;
+const fmtDate = d => d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
+const shortDate = d => d.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});
+function refresh(){
+  $("d-date").textContent = selDate ? fmtDate(selDate) : "To be chosen";
+  $("d-time").textContent = selTime || "To be chosen";
+  const ready = selDate && selTime;
+  $("ig").classList.toggle("disabled", !ready);
+  if(ready) $("hint").textContent = "Lovely. One tap opens our chat and copies your reply.";
+  countdown();
+}
+function makeChips(box, items, label, onPick){
+  const all = [];
+  items.forEach(it => {
+    const c = document.createElement("button"); c.className = "chip"; c.textContent = label(it);
+    c.addEventListener("click", () => { all.forEach(x => x.classList.remove("on")); c.classList.add("on"); onPick(it); refresh(); });
+    all.push(c); box.appendChild(c);
+  });
+}
+const today0 = new Date(); today0.setHours(0,0,0,0);
+const days = [];
+for(let d = new Date(CONFIG.year, CONFIG.month, 1); d.getMonth() === CONFIG.month; d.setDate(d.getDate() + 1)){ if(d >= today0) days.push(new Date(d)); }
+const times = [];
+for(let m = CONFIG.startHour * 60; m <= CONFIG.endHour * 60; m += CONFIG.stepMinutes){ const h = Math.floor(m / 60), mm = m % 60; times.push((h % 12 || 12) + ":" + String(mm).padStart(2, "0") + " " + (h < 12 ? "AM" : "PM")); }
+days.forEach((d, i) => { const o = document.createElement("option"); o.value = i; o.textContent = fmtDate(d); $("dateSel").appendChild(o); });
+$("dateSel").addEventListener("change", e => { selDate = e.target.value === "" ? null : days[+e.target.value]; refresh(); });
+times.forEach(t => { const o = document.createElement("option"); o.value = t; o.textContent = t; $("timeSel").appendChild(o); });
+$("timeSel").addEventListener("change", e => { selTime = e.target.value || null; refresh(); });
+$("ig").classList.add("disabled");
+
+function countdown(){
+  if(!selDate) return;
+  const t0 = new Date(); t0.setHours(0,0,0,0);
+  const d = Math.round((selDate - t0) / 864e5);
+  if(d < 0) return;
+  $("count").textContent = d === 0 ? "Tonight" : d === 1 ? "Tomorrow" : d + " days to go";
+}
+
+yes.addEventListener("click", () => {
+  card.classList.remove("sad"); card.classList.add("happy");
+  bubble.textContent = "Wonderful. See you there!";
+  $("ask").classList.add("hidden"); $("done").classList.remove("hidden");
+  petals(26);
+});
+$("ig").addEventListener("click", () => {
+  try { navigator.clipboard.writeText(buildReply()); $("hint").textContent = "Your reply is copied. Just paste it into the chat."; } catch(e) {}
+});
+</script>
+</body>
+</html>
