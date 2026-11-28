@@ -361,6 +361,18 @@ select:focus{outline:none}
 .chip:hover{background:var(--field-hover);border-color:var(--gold)}
 .chip.on{background:var(--btn);border-color:var(--btn);color:var(--btntext)}
 
+.msg-preview-wrap{
+  margin:0 0 16px;text-align:left;
+}
+.msg-preview{
+  background:var(--bubble);border:1.5px dashed var(--border-strong);
+  border-radius:16px;padding:11px 14px;font-size:.84rem;line-height:1.5;
+  color:var(--ink);font-weight:600;position:relative;
+  transition:border-color .2s,background .2s;
+}
+.msg-preview.empty{
+  color:var(--muted);font-style:italic;font-weight:400;
+}
 .actions{display:flex;flex-direction:column;gap:8px;align-items:center}
 .actions .primary{width:100%}
 .copy-hint{
@@ -506,6 +518,17 @@ select:focus{outline:none}
     </div>
   </div>
 
+  <div id="raincheck" class="hidden">
+    <h1>Raincheck <em>saved</em></h1>
+    <div class="rule"></div>
+    <p>Totally okay—no rush at all! Send a quick note whenever you're free, or switch back if you change your mind.</p>
+    <div class="actions" style="margin-top:18px">
+      <a class="btn primary" id="igRaincheck" href="https://ig.me/m/ronnn.leong" rel="noopener">Send Raincheck on IG</a>
+      <div class="copy-hint ok" id="raincheckHint" aria-live="polite"></div>
+      <button type="button" class="ghost settled" id="reconsider" style="position:static;transform:none;margin-top:4px">Actually, count me in!</button>
+    </div>
+  </div>
+
   <div id="done" class="hidden">
     <h1>Yay!</h1>
     <div class="rule"></div>
@@ -566,6 +589,11 @@ select:focus{outline:none}
     <div class="section-label"><span>2. Cravings &amp; Favourites</span><small>Optional</small></div>
     <div class="chips" id="chips"></div>
 
+    <div class="msg-preview-wrap">
+      <div class="section-label"><span>3. Message Preview</span><small>Auto-copied on send</small></div>
+      <div class="msg-preview empty" id="msgPreview" aria-live="polite">Pick a date &amp; time above to preview your reply…</div>
+    </div>
+
     <div class="actions">
       <a class="btn primary disabled" id="ig" href="https://ig.me/m/ronnn.leong" rel="noopener">Send on Instagram</a>
       <div class="copy-hint" id="copyHint" aria-live="polite">Copies your message automatically when you tap</div>
@@ -598,6 +626,8 @@ $("d-where").textContent = CONFIG.where;
 $("from").textContent = CONFIG.fromName;
 $("ig").href = CONFIG.dmLink;
 $("ig").removeAttribute("target");
+$("igRaincheck").href = CONFIG.dmLink;
+$("igRaincheck").removeAttribute("target");
 
 /* petals */
 function petals(n){
@@ -683,14 +713,30 @@ function settleNextTime(){
 }
 
 async function handleNextTimeClick(){
-  const msg = "Hey Ron! Raincheck on sushi this time—let's catch up next time!";
+  const msg = `Hey ${CONFIG.fromName}! Raincheck on sushi this time—let's catch up next time!`;
+  const copied = await copyText(msg);
+  bubble.textContent = "Raincheck accepted—anytime!";
+  $("ask").classList.add("hidden");
+  $("raincheck").classList.remove("hidden");
+  $("raincheckHint").textContent = copied
+    ? "Copied a sweet raincheck note to your clipboard!"
+    : "Tap above to message on Instagram";
+}
+
+$("igRaincheck").addEventListener("click", async e => {
+  e.preventDefault();
+  const msg = `Hey ${CONFIG.fromName}! Raincheck on sushi this time—let's catch up next time!`;
   await copyText(msg);
-  no.textContent = "Copied! Opening IG…";
-  bubble.textContent = "Copied a sweet raincheck note—paste it in DM!";
+  $("igRaincheck").textContent = "Copied! Opening Instagram…";
   setTimeout(() => {
     window.location.href = CONFIG.dmLink;
-  }, 300);
-}
+  }, 250);
+});
+
+$("reconsider").addEventListener("click", () => {
+  $("raincheck").classList.add("hidden");
+  yes.click();
+});
 
 function handleNo(e){
   if(e.type === "touchstart") lastTouch = Date.now();
@@ -749,8 +795,8 @@ const fmtDate = d => d.toLocaleDateString("en-GB", {weekday:"short", day:"numeri
 const fmtLongDate = d => d.toLocaleDateString("en-GB", {weekday:"long", day:"numeric", month:"long"});
 
 function buildReply(){
-  let m = `Count me in for sushi at ${CONFIG.where} on ${fmtLongDate(selDate)} at ${selTime}!`;
-  if(needRide) m += ` Also, please pick me up!`;
+  let m = `Sushi at ${CONFIG.where} on ${fmtLongDate(selDate)} at ${selTime} sounds great!`;
+  if(needRide) m += ` Also, a pick-up ride would be awesome!`;
   if(picked.size) m += ` Definitely saving room for: ${[...picked].join(", ")}.`;
   return m;
 }
@@ -858,6 +904,15 @@ function refresh(){
 
   const ready = Boolean(selDate && selTime);
   $("ig").classList.toggle("disabled", !ready);
+
+  const prevEl = $("msgPreview");
+  if(ready){
+    prevEl.textContent = `“${buildReply()}”`;
+    prevEl.classList.remove("empty");
+  } else {
+    prevEl.textContent = "Pick a date & time above to preview your reply…";
+    prevEl.classList.add("empty");
+  }
 }
 
 yes.addEventListener("click", () => {
