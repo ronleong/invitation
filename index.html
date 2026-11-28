@@ -384,7 +384,7 @@ select:focus{outline:none}
   color:var(--muted);font-style:italic;font-weight:400;
 }
 .manual-copy-box{
-  margin-top:8px;display:flex;flex-direction:column;gap:4px;
+  margin-top:8px;display:flex;flex-direction:column;gap:6px;
 }
 .manual-copy-box label{
   font-size:.62rem;font-weight:700;color:var(--accent-deep);
@@ -394,6 +394,12 @@ select:focus{outline:none}
   background:var(--card);color:var(--ink);font-family:var(--sans);
   font-size:16px;line-height:1.4;padding:8px 10px;resize:none;
 }
+.manual-confirm-btn{
+  align-self:flex-start;border-radius:999px;padding:7px 14px;
+  background:var(--bubble);border:1.5px solid var(--btn);color:var(--accent-deep);
+  font-size:.62rem;font-weight:800;letter-spacing:.12em;
+}
+.manual-confirm-btn:hover{background:var(--field-hover)}
 .actions{display:flex;flex-direction:column;gap:9px;align-items:center}
 .actions .primary,.actions .secondary{width:100%}
 .copy-hint{
@@ -413,7 +419,16 @@ select:focus{outline:none}
 .bow path,.bow circle{fill:var(--btn)}
 .bow circle{stroke:#ffffff77;stroke-width:1.5}
 .primary.disabled,.secondary.disabled{opacity:.42;pointer-events:none}
-@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -553,14 +568,15 @@ select:focus{outline:none}
       <div class="section-label"><span>Raincheck Note</span><small>Step 1: Copy</small></div>
       <div class="msg-preview" id="raincheckPreview"></div>
       <div class="manual-copy-box hidden" id="raincheckManualBox">
-        <label for="raincheckManualText">Tap &amp; hold below to copy manually:</label>
+        <label for="raincheckManualText">Select all text below and copy via iOS menu:</label>
         <textarea id="raincheckManualText" rows="2" readonly></textarea>
+        <button type="button" class="manual-confirm-btn" id="confirmRaincheckManualBtn">I've copied it manually</button>
       </div>
     </div>
     <div class="actions">
       <button type="button" class="secondary" id="copyRaincheckBtn">1. Copy Raincheck Note</button>
-      <a class="btn primary" id="igRaincheck" href="https://ig.me/m/ronnn.leong" rel="noopener">2. Open Instagram</a>
-      <div class="copy-hint" id="raincheckHint" aria-live="polite">Copy first, then open Instagram to paste &amp; send</div>
+      <a class="btn primary disabled" id="igRaincheck" href="https://ig.me/m/ronnn.leong" rel="noopener" aria-disabled="true" tabindex="-1">2. Open Instagram</a>
+      <div class="copy-hint" id="raincheckHint" aria-live="polite">Copy first to unlock Open Instagram</div>
       <a class="fallback-link hidden" id="igRaincheckFallback" href="https://www.instagram.com/ronnn.leong/" rel="noopener">Open profile directly if DM didn't jump</a>
       <button type="button" class="ghost settled" id="reconsider" style="position:static;transform:none;margin-top:4px">Actually, count me in!</button>
     </div>
@@ -630,15 +646,16 @@ select:focus{outline:none}
       <div class="section-label"><span>3. Message Preview</span><small>Step 1: Copy</small></div>
       <div class="msg-preview empty" id="msgPreview" aria-live="polite">Pick a date &amp; time above to preview your reply…</div>
       <div class="manual-copy-box hidden" id="manualCopyBox">
-        <label for="manualCopyText">Clipboard blocked—tap &amp; hold below to copy manually:</label>
+        <label for="manualCopyText">Select all text below and copy via iOS menu:</label>
         <textarea id="manualCopyText" rows="3" readonly></textarea>
+        <button type="button" class="manual-confirm-btn" id="confirmReplyManualBtn">I've copied it manually</button>
       </div>
     </div>
 
     <div class="actions">
       <button type="button" class="secondary disabled" id="copyReplyBtn" disabled>1. Copy Dinner Reply</button>
-      <a class="btn primary disabled" id="ig" href="https://ig.me/m/ronnn.leong" rel="noopener">2. Open Instagram</a>
-      <div class="copy-hint" id="copyHint" aria-live="polite">Copy your reply first, then open Instagram to paste &amp; send</div>
+      <a class="btn primary disabled" id="ig" href="https://ig.me/m/ronnn.leong" rel="noopener" aria-disabled="true" tabindex="-1">2. Open Instagram</a>
+      <div class="copy-hint" id="copyHint" aria-live="polite">Pick a date &amp; time, then copy your reply first</div>
       <a class="fallback-link hidden" id="igFallback" href="https://www.instagram.com/ronnn.leong/" rel="noopener">Didn't open DM? Tap here for profile</a>
     </div>
   </div>
@@ -766,31 +783,25 @@ function settleNextTime(){
   $("sub").textContent = "Whenever you're free next time, I'd still love to grab sushi together.";
 }
 
-/* Verified clipboard copy: only resolves true when either writeText() resolves OR execCommand("copy") returns true */
-async function copyTextVerified(text){
-  if(navigator.clipboard && window.isSecureContext && navigator.clipboard.writeText){
-    try {
-      await navigator.clipboard.writeText(text);
-      return true;
-    } catch(_) {
-      /* Fall through to synchronous execCommand fallback */
-    }
+/* Clipboard API copy (returns true ONLY when navigator.clipboard.writeText resolves) */
+async function copyViaClipboardAPI(text){
+  if(!navigator.clipboard || !window.isSecureContext || typeof navigator.clipboard.writeText !== "function"){
+    return false;
   }
-  const a = document.createElement("textarea");
-  a.value = text;
-  a.setAttribute("readonly", "");
-  a.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;font-size:16px";
-  document.body.appendChild(a);
-  a.select();
-  a.setSelectionRange(0, text.length);
-  let ok = false;
   try {
-    ok = document.execCommand("copy") === true;
+    await navigator.clipboard.writeText(text);
+    return true;
   } catch(_) {
-    ok = false;
+    return false;
   }
-  a.remove();
-  return ok;
+}
+
+function selectManualTextarea(textareaEl){
+  textareaEl.focus();
+  textareaEl.select();
+  if(typeof textareaEl.setSelectionRange === "function"){
+    textareaEl.setSelectionRange(0, textareaEl.value.length);
+  }
 }
 
 function revealFallbackIfStillHere(fallbackEl){
@@ -801,20 +812,44 @@ function revealFallbackIfStillHere(fallbackEl){
   }, 1500);
 }
 
+/* Raincheck state & sequencing */
 const raincheckMsg = () => `Hey ${CONFIG.fromName}! Raincheck on sushi this time—let's catch up next time!`;
+let copiedRaincheckText = "";
+
+function refreshRaincheck(){
+  const msg = raincheckMsg();
+  if(copiedRaincheckText && copiedRaincheckText !== msg){
+    copiedRaincheckText = "";
+  }
+  const hasCopy = copiedRaincheckText === msg;
+  const igBtn = $("igRaincheck");
+  igBtn.classList.toggle("disabled", !hasCopy);
+  igBtn.setAttribute("aria-disabled", String(!hasCopy));
+  igBtn.tabIndex = hasCopy ? 0 : -1;
+
+  if(hasCopy){
+    $("copyRaincheckBtn").textContent = "✓ Copied Raincheck Note";
+    $("copyRaincheckBtn").classList.add("copied");
+    $("raincheckHint").textContent = "Ready! Tap Open Instagram below to paste & send";
+    $("raincheckHint").classList.remove("warn");
+    $("raincheckHint").classList.add("ok");
+  }
+}
 
 function handleNextTimeClick(){
   const msg = raincheckMsg();
+  copiedRaincheckText = "";
   $("raincheckPreview").textContent = `“${msg}”`;
   $("raincheckManualText").value = msg;
   $("raincheckManualBox").classList.add("hidden");
   $("copyRaincheckBtn").textContent = "1. Copy Raincheck Note";
   $("copyRaincheckBtn").classList.remove("copied");
-  $("raincheckHint").textContent = "Tap Copy first, then open Instagram to paste & send";
+  $("raincheckHint").textContent = "Copy first to unlock Open Instagram";
   $("raincheckHint").classList.remove("ok", "warn");
   bubble.textContent = "Raincheck accepted—anytime!";
   $("ask").classList.add("hidden");
   $("raincheck").classList.remove("hidden");
+  refreshRaincheck();
 }
 
 $("copyRaincheckBtn").addEventListener("click", async () => {
@@ -822,31 +857,45 @@ $("copyRaincheckBtn").addEventListener("click", async () => {
   const btn = $("copyRaincheckBtn");
   const hint = $("raincheckHint");
   btn.textContent = "Copying…";
-  const copied = await copyTextVerified(msg);
-  if(copied){
-    btn.textContent = "✓ Copied Raincheck Note";
-    btn.classList.add("copied");
-    hint.textContent = "Copied! Now tap Open Instagram below and paste";
-    hint.classList.remove("warn");
-    hint.classList.add("ok");
+  const ok = await copyViaClipboardAPI(msg);
+  if(ok){
+    copiedRaincheckText = msg;
     $("raincheckManualBox").classList.add("hidden");
+    refreshRaincheck();
   } else {
+    copiedRaincheckText = "";
     btn.textContent = "1. Copy Raincheck Note";
     btn.classList.remove("copied");
-    hint.textContent = "Auto-copy was blocked—select & copy the note box above";
+    hint.textContent = "Auto-copy unavailable—select all in the box, copy, then confirm below";
     hint.classList.remove("ok");
     hint.classList.add("warn");
     $("raincheckManualText").value = msg;
     $("raincheckManualBox").classList.remove("hidden");
-    $("raincheckManualText").focus();
-    $("raincheckManualText").select();
+    selectManualTextarea($("raincheckManualText"));
+    refreshRaincheck();
   }
 });
 
-/* Pure native <a> link handler for Instagram DM Universal Link — zero preventDefault, zero async delay */
-$("igRaincheck").addEventListener("click", () => {
+$("confirmRaincheckManualBtn").addEventListener("click", () => {
+  const msg = raincheckMsg();
+  copiedRaincheckText = msg;
+  $("raincheckManualBox").classList.add("hidden");
+  refreshRaincheck();
+});
+
+$("igRaincheck").addEventListener("click", e => {
+  if(copiedRaincheckText !== raincheckMsg()){
+    e.preventDefault();
+    return;
+  }
   $("igRaincheck").textContent = "Opening Instagram…";
   revealFallbackIfStillHere($("igRaincheckFallback"));
+});
+
+$("igRaincheck").addEventListener("keydown", e => {
+  if((e.key === "Enter" || e.key === " ") && copiedRaincheckText !== raincheckMsg()){
+    e.preventDefault();
+  }
 });
 
 $("reconsider").addEventListener("click", () => {
@@ -892,9 +941,12 @@ CONFIG.favourites.forEach(f => {
   c.type = "button";
   c.className = "chip";
   c.textContent = f;
+  c.setAttribute("aria-pressed", "false");
   c.addEventListener("click", () => {
-    picked.has(f) ? picked.delete(f) : picked.add(f);
-    c.classList.toggle("on");
+    const nextPressed = !picked.has(f);
+    nextPressed ? picked.add(f) : picked.delete(f);
+    c.classList.toggle("on", nextPressed);
+    c.setAttribute("aria-pressed", String(nextPressed));
     refresh();
   });
   $("chips").appendChild(c);
@@ -907,17 +959,6 @@ $("rideSwitch").addEventListener("click", () => {
   refresh();
 });
 
-const fmtDate = d => d.toLocaleDateString("en-GB", {weekday:"short", day:"numeric", month:"short"});
-const fmtLongDate = d => d.toLocaleDateString("en-GB", {weekday:"long", day:"numeric", month:"long"});
-const utcDayDiff = (a, b) => Math.round((Date.UTC(b.getFullYear(), b.getMonth(), b.getDate()) - Date.UTC(a.getFullYear(), a.getMonth(), a.getDate())) / 864e5);
-
-function buildReply(){
-  let m = `Sushi at ${CONFIG.where} on ${fmtLongDate(selDate)} at ${selTime} sounds great!`;
-  if(needRide) m += ` Also, a pick-up ride would be awesome!`;
-  if(picked.size) m += ` Definitely saving room for: ${[...picked].join(", ")}.`;
-  return m;
-}
-
 /* build date options (target month, or next 21 days fallback) */
 const today0 = new Date();
 today0.setHours(0,0,0,0);
@@ -929,11 +970,30 @@ for(let d = new Date(CONFIG.year, CONFIG.month, 1); d.getMonth() === CONFIG.mont
 }
 if(days.length < 5){
   days = [];
-  for(let i = 1; i <= 21; i++){
+  for(let i = 0; i <= 21; i++){
     const d = new Date(today0);
     d.setDate(today0.getDate() + i);
     if(!blockedSet.has(isoDate(d))) days.push(d);
   }
+}
+
+const distinctYears = new Set(days.map(d => d.getFullYear()));
+const includeYearInMessage = distinctYears.size > 1 || [...distinctYears].some(y => y !== today0.getFullYear());
+
+const fmtDate = d => d.toLocaleDateString("en-GB", {weekday:"short", day:"numeric", month:"short"});
+const fmtLongDate = d => d.toLocaleDateString("en-GB", {
+  weekday:"long",
+  day:"numeric",
+  month:"long",
+  ...(includeYearInMessage ? {year:"numeric"} : {})
+});
+const utcDayDiff = (a, b) => Math.round((Date.UTC(b.getFullYear(), b.getMonth(), b.getDate()) - Date.UTC(a.getFullYear(), a.getMonth(), a.getDate())) / 864e5);
+
+function buildReply(){
+  let m = `Sushi at ${CONFIG.where} on ${fmtLongDate(selDate)} at ${selTime} sounds great!`;
+  if(needRide) m += ` Also, a pick-up ride would be awesome!`;
+  if(picked.size) m += ` Definitely saving room for: ${[...picked].join(", ")}.`;
+  return m;
 }
 
 days.forEach((d, i) => {
@@ -951,23 +1011,59 @@ const quickPool = days.filter(d => [5, 6, 0].includes(d.getDay())).slice(0, 5);
   b.type = "button";
   b.className = "qchip";
   b.dataset.idx = idx;
+  b.setAttribute("aria-pressed", "false");
   b.innerHTML = `<span>${d.toLocaleDateString("en-GB",{weekday:"short"})}</span>${d.toLocaleDateString("en-GB",{day:"numeric",month:"short"})}`;
   b.addEventListener("click", () => {
     $("dateSel").value = idx;
     selDate = days[idx];
+    syncTimeOptionsForDate();
     refresh();
   });
   $("quickDates").appendChild(b);
 });
 
-/* time options + quick time pills */
+/* time slots + exclusion of already-passed times when today is selected */
+const allTimeSlots = [];
 for(let m = CONFIG.startHour * 60; m <= CONFIG.endHour * 60; m += CONFIG.stepMinutes){
   const h = Math.floor(m / 60), mm = m % 60;
   const label = (h % 12 || 12) + ":" + String(mm).padStart(2, "0") + " " + (h < 12 ? "AM" : "PM");
-  const o = document.createElement("option");
-  o.value = label;
-  o.textContent = label;
-  $("timeSel").appendChild(o);
+  allTimeSlots.push({ minutes: m, label });
+}
+
+function getAllowedTimeLabels(dateObj){
+  if(!dateObj) return allTimeSlots.map(s => s.label);
+  const isToday = utcDayDiff(today0, dateObj) === 0;
+  if(!isToday) return allTimeSlots.map(s => s.label);
+  const now = new Date();
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+  return allTimeSlots.filter(s => s.minutes > nowMinutes).map(s => s.label);
+}
+
+function syncTimeOptionsForDate(){
+  const allowed = new Set(getAllowedTimeLabels(selDate));
+  const timeSel = $("timeSel");
+  const placeholder = timeSel.options[0];
+  timeSel.innerHTML = "";
+  timeSel.appendChild(placeholder);
+
+  allTimeSlots.forEach(s => {
+    if(!allowed.has(s.label)) return;
+    const o = document.createElement("option");
+    o.value = s.label;
+    o.textContent = s.label;
+    timeSel.appendChild(o);
+  });
+
+  if(selTime && !allowed.has(selTime)){
+    selTime = null;
+  }
+  timeSel.value = selTime || "";
+
+  document.querySelectorAll(".tpill").forEach(btn => {
+    const isAllowed = allowed.has(btn.dataset.time);
+    btn.disabled = !isAllowed;
+    btn.classList.toggle("disabled", !isAllowed);
+  });
 }
 
 CONFIG.quickTimes.forEach(t => {
@@ -977,6 +1073,7 @@ CONFIG.quickTimes.forEach(t => {
   b.dataset.time = t;
   b.textContent = t;
   b.addEventListener("click", () => {
+    if(b.disabled) return;
     $("timeSel").value = t;
     selTime = t;
     refresh();
@@ -984,8 +1081,11 @@ CONFIG.quickTimes.forEach(t => {
   $("timePills").appendChild(b);
 });
 
+syncTimeOptionsForDate();
+
 $("dateSel").addEventListener("change", e => {
   selDate = e.target.value === "" ? null : days[+e.target.value];
+  syncTimeOptionsForDate();
   refresh();
 });
 $("timeSel").addEventListener("change", e => {
@@ -1002,7 +1102,9 @@ function refresh(){
   tEl.classList.toggle("empty", !selTime);
 
   document.querySelectorAll(".qchip").forEach(btn => {
-    btn.classList.toggle("on", selDate && days[+btn.dataset.idx]?.getTime() === selDate.getTime());
+    const isSelected = Boolean(selDate && days[+btn.dataset.idx]?.getTime() === selDate.getTime());
+    btn.classList.toggle("on", isSelected);
+    btn.setAttribute("aria-pressed", String(isSelected));
   });
   document.querySelectorAll(".tpill").forEach(btn => {
     btn.classList.toggle("on", selTime === btn.dataset.time);
@@ -1020,23 +1122,48 @@ function refresh(){
   $("rideSub").textContent = needRide ? "Yes — I'll come pick you up" : "Slide on if you want me to pick you up";
 
   const ready = Boolean(selDate && selTime);
+  const currentReply = ready ? buildReply() : "";
+
+  /* Invalidate an older copied message whenever the reply changes or is incomplete */
+  if(copiedReplyText && copiedReplyText !== currentReply){
+    copiedReplyText = "";
+    $("manualCopyBox").classList.add("hidden");
+  }
+
+  const hasCurrentCopy = ready && copiedReplyText === currentReply;
   const copyBtn = $("copyReplyBtn");
+  const igLink = $("ig");
+
   copyBtn.classList.toggle("disabled", !ready);
   copyBtn.disabled = !ready;
-  $("ig").classList.toggle("disabled", !ready);
+
+  igLink.classList.toggle("disabled", !hasCurrentCopy);
+  igLink.setAttribute("aria-disabled", String(!hasCurrentCopy));
+  igLink.tabIndex = hasCurrentCopy ? 0 : -1;
 
   const prevEl = $("msgPreview");
   const hint = $("copyHint");
   if(ready){
-    const currentReply = buildReply();
     prevEl.textContent = `“${currentReply}”`;
     prevEl.classList.remove("empty");
     $("manualCopyText").value = currentReply;
-    if(copiedReplyText !== currentReply){
+    if(hasCurrentCopy){
+      copyBtn.textContent = "✓ Copied Dinner Reply";
+      copyBtn.classList.add("copied");
+      hint.textContent = "Ready! Tap Open Instagram below to paste & send";
+      hint.classList.remove("warn");
+      hint.classList.add("ok");
+    } else {
       copyBtn.textContent = "1. Copy Dinner Reply";
       copyBtn.classList.remove("copied");
-      hint.textContent = "Step 1: Copy your dinner reply, then Step 2: Open Instagram";
-      hint.classList.remove("ok", "warn");
+      if(!$("manualCopyBox").classList.contains("hidden")){
+        hint.textContent = "Auto-copy unavailable—select all in the box, copy, then confirm below";
+        hint.classList.remove("ok");
+        hint.classList.add("warn");
+      } else {
+        hint.textContent = "Step 1: Copy your dinner reply to unlock Open Instagram";
+        hint.classList.remove("ok", "warn");
+      }
     }
   } else {
     copiedReplyText = "";
@@ -1045,7 +1172,7 @@ function refresh(){
     copyBtn.textContent = "1. Copy Dinner Reply";
     copyBtn.classList.remove("copied");
     $("manualCopyBox").classList.add("hidden");
-    hint.textContent = "Copy your reply first, then open Instagram to paste & send";
+    hint.textContent = "Pick a date & time, then copy your reply first";
     hint.classList.remove("ok", "warn");
   }
 }
@@ -1056,52 +1183,65 @@ yes.addEventListener("click", () => {
   bubble.textContent = "Best decision all week!";
   $("ask").classList.add("hidden");
   $("done").classList.remove("hidden");
-  if(CONFIG.defaultTime && [...$("timeSel").options].some(o => o.value === CONFIG.defaultTime)){
+  syncTimeOptionsForDate();
+  const allowed = new Set(getAllowedTimeLabels(selDate));
+  if(CONFIG.defaultTime && allowed.has(CONFIG.defaultTime)){
     $("timeSel").value = CONFIG.defaultTime;
     selTime = CONFIG.defaultTime;
-    refresh();
   }
+  refresh();
   petals(26);
 });
 
-/* Dedicated Step 1: Verified async Clipboard copy with honest failure UI */
 $("copyReplyBtn").addEventListener("click", async () => {
   if(!selDate || !selTime) return;
   const msg = buildReply();
-  const btn = $("copyReplyBtn");
+  const copyBtn = $("copyReplyBtn");
   const hint = $("copyHint");
-  btn.textContent = "Copying…";
-  const copied = await copyTextVerified(msg);
-  if(copied){
+  copyBtn.textContent = "Copying…";
+  const ok = await copyViaClipboardAPI(msg);
+  if(ok){
     copiedReplyText = msg;
-    btn.textContent = "✓ Copied Dinner Reply";
-    btn.classList.add("copied");
-    hint.textContent = "Copied! Now tap Open Instagram below and paste";
-    hint.classList.remove("warn");
-    hint.classList.add("ok");
     $("manualCopyBox").classList.add("hidden");
+    refresh();
   } else {
     copiedReplyText = "";
-    btn.textContent = "1. Copy Dinner Reply";
-    btn.classList.remove("copied");
-    hint.textContent = "Auto-copy was blocked—select & copy the text box above";
-    hint.classList.remove("ok");
-    hint.classList.add("warn");
     $("manualCopyText").value = msg;
     $("manualCopyBox").classList.remove("hidden");
-    $("manualCopyText").focus();
-    $("manualCopyText").select();
+    selectManualTextarea($("manualCopyText"));
+    hint.textContent = "Auto-copy unavailable—select all in the box, copy, then confirm below";
+    hint.classList.remove("ok");
+    hint.classList.add("warn");
+    refresh();
   }
 });
 
-/* Dedicated Step 2: Native <a href="https://ig.me/m/ronnn.leong"> Universal Link handoff */
+$("confirmReplyManualBtn").addEventListener("click", () => {
+  if(!selDate || !selTime) return;
+  copiedReplyText = buildReply();
+  $("manualCopyBox").classList.add("hidden");
+  refresh();
+});
+
 $("ig").addEventListener("click", e => {
-  if(!selDate || !selTime){
+  const ready = Boolean(selDate && selTime);
+  const currentReply = ready ? buildReply() : "";
+  if(!ready || copiedReplyText !== currentReply){
     e.preventDefault();
     return;
   }
   $("ig").textContent = "Opening Instagram…";
   revealFallbackIfStillHere($("igFallback"));
+});
+
+$("ig").addEventListener("keydown", e => {
+  if(e.key === "Enter" || e.key === " "){
+    const ready = Boolean(selDate && selTime);
+    const currentReply = ready ? buildReply() : "";
+    if(!ready || copiedReplyText !== currentReply){
+      e.preventDefault();
+    }
+  }
 });
 </script>
 </body>
