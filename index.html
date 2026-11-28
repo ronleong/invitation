@@ -206,7 +206,7 @@ h1 em{font-style:italic;color:var(--gold)}
 p{margin:0;font-size:.96rem;line-height:1.6;color:var(--muted)}
 .sign{margin-top:14px;font-family:var(--serif);font-style:italic;font-size:1.08rem;color:var(--accent-deep)}
 
-.btns{position:relative;height:148px;margin-top:18px}
+.btns{position:relative;height:156px;margin-top:18px}
 button,.btn{
   font-family:var(--sans);font-size:.74rem;font-weight:700;
   letter-spacing:.2em;text-transform:uppercase;cursor:pointer;
@@ -219,6 +219,16 @@ button,.btn{
   box-shadow:0 8px 18px #d95b7945;
 }
 .primary:hover{filter:brightness(1.04);transform:translateY(-1px)}
+.secondary{
+  background:var(--card);color:var(--ink);border:1.5px solid var(--border-strong);
+  border-radius:999px;padding:13px 24px;display:inline-flex;
+  align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 3px 10px #0000000d;
+}
+.secondary:hover{background:var(--field-hover);border-color:var(--gold);transform:translateY(-1px)}
+.secondary.copied{
+  background:var(--bubble);border-color:var(--btn);color:var(--accent-deep);
+}
 #yes{position:absolute;left:50%;top:0;transform:translateX(-50%) scale(1);transform-origin:center top;white-space:nowrap}
 .ghost{
   position:absolute;border-radius:999px;background:var(--field);
@@ -373,19 +383,36 @@ select:focus{outline:none}
 .msg-preview.empty{
   color:var(--muted);font-style:italic;font-weight:400;
 }
-.actions{display:flex;flex-direction:column;gap:8px;align-items:center}
-.actions .primary{width:100%}
+.manual-copy-box{
+  margin-top:8px;display:flex;flex-direction:column;gap:4px;
+}
+.manual-copy-box label{
+  font-size:.62rem;font-weight:700;color:var(--accent-deep);
+}
+.manual-copy-box textarea{
+  width:100%;border-radius:12px;border:1.5px solid var(--border-strong);
+  background:var(--card);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.4;padding:8px 10px;resize:none;
+}
+.actions{display:flex;flex-direction:column;gap:9px;align-items:center}
+.actions .primary,.actions .secondary{width:100%}
 .copy-hint{
   font-size:.7rem;font-weight:600;color:var(--muted);
   min-height:1.1em;transition:color .2s;
 }
 .copy-hint.ok{color:var(--accent-deep);font-weight:700}
+.copy-hint.warn{color:var(--accent-deep);font-weight:700}
+.fallback-link{
+  font-size:.68rem;font-weight:700;color:var(--accent-deep);
+  text-decoration:underline;text-underline-offset:3px;
+  margin-top:2px;
+}
 
 .bow{position:absolute;top:-17px;left:50%;margin-left:-30px;width:60px;height:34px;z-index:2;filter:drop-shadow(0 3px 4px #d95b7945)}
 .bow svg{width:100%;height:100%;display:block}
 .bow path,.bow circle{fill:var(--btn)}
 .bow circle{stroke:#ffffff77;stroke-width:1.5}
-.primary.disabled{opacity:.42;pointer-events:none}
+.primary.disabled,.secondary.disabled{opacity:.42;pointer-events:none}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
@@ -521,10 +548,20 @@ select:focus{outline:none}
   <div id="raincheck" class="hidden">
     <h1>Raincheck <em>saved</em></h1>
     <div class="rule"></div>
-    <p>Totally okay—no rush at all! Send a quick note whenever you're free, or switch back if you change your mind.</p>
-    <div class="actions" style="margin-top:18px">
-      <a class="btn primary" id="igRaincheck" href="https://ig.me/m/ronnn.leong" rel="noopener">Send Raincheck on IG</a>
-      <div class="copy-hint ok" id="raincheckHint" aria-live="polite"></div>
+    <p>Totally okay—no rush at all! Copy the quick note below and open Instagram whenever you're free, or switch back anytime.</p>
+    <div class="msg-preview-wrap" style="margin-top:16px">
+      <div class="section-label"><span>Raincheck Note</span><small>Step 1: Copy</small></div>
+      <div class="msg-preview" id="raincheckPreview"></div>
+      <div class="manual-copy-box hidden" id="raincheckManualBox">
+        <label for="raincheckManualText">Tap &amp; hold below to copy manually:</label>
+        <textarea id="raincheckManualText" rows="2" readonly></textarea>
+      </div>
+    </div>
+    <div class="actions">
+      <button type="button" class="secondary" id="copyRaincheckBtn">1. Copy Raincheck Note</button>
+      <a class="btn primary" id="igRaincheck" href="https://ig.me/m/ronnn.leong" rel="noopener">2. Open Instagram</a>
+      <div class="copy-hint" id="raincheckHint" aria-live="polite">Copy first, then open Instagram to paste &amp; send</div>
+      <a class="fallback-link hidden" id="igRaincheckFallback" href="https://www.instagram.com/ronnn.leong/" rel="noopener">Open profile directly if DM didn't jump</a>
       <button type="button" class="ghost settled" id="reconsider" style="position:static;transform:none;margin-top:4px">Actually, count me in!</button>
     </div>
   </div>
@@ -590,13 +627,19 @@ select:focus{outline:none}
     <div class="chips" id="chips"></div>
 
     <div class="msg-preview-wrap">
-      <div class="section-label"><span>3. Message Preview</span><small>Auto-copied on send</small></div>
+      <div class="section-label"><span>3. Message Preview</span><small>Step 1: Copy</small></div>
       <div class="msg-preview empty" id="msgPreview" aria-live="polite">Pick a date &amp; time above to preview your reply…</div>
+      <div class="manual-copy-box hidden" id="manualCopyBox">
+        <label for="manualCopyText">Clipboard blocked—tap &amp; hold below to copy manually:</label>
+        <textarea id="manualCopyText" rows="3" readonly></textarea>
+      </div>
     </div>
 
     <div class="actions">
-      <a class="btn primary disabled" id="ig" href="https://ig.me/m/ronnn.leong" rel="noopener">Send on Instagram</a>
-      <div class="copy-hint" id="copyHint" aria-live="polite">Copies your message automatically when you tap</div>
+      <button type="button" class="secondary disabled" id="copyReplyBtn" disabled>1. Copy Dinner Reply</button>
+      <a class="btn primary disabled" id="ig" href="https://ig.me/m/ronnn.leong" rel="noopener">2. Open Instagram</a>
+      <div class="copy-hint" id="copyHint" aria-live="polite">Copy your reply first, then open Instagram to paste &amp; send</div>
+      <a class="fallback-link hidden" id="igFallback" href="https://www.instagram.com/ronnn.leong/" rel="noopener">Didn't open DM? Tap here for profile</a>
     </div>
   </div>
 </div>
@@ -628,9 +671,14 @@ $("ig").href = CONFIG.dmLink;
 $("ig").removeAttribute("target");
 $("igRaincheck").href = CONFIG.dmLink;
 $("igRaincheck").removeAttribute("target");
+$("igFallback").href = CONFIG.profileLink;
+$("igRaincheckFallback").href = CONFIG.profileLink;
+
+const prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /* petals */
 function petals(n){
+  if(prefersReducedMotion) return;
   const cols = ["#f6b4c3","#ffd9cf","#ffe3a3","#f2a9b8"];
   for(let i = 0; i < n; i++){
     const p = document.createElement("span");
@@ -654,13 +702,15 @@ function openEnv(){
   opened = true;
   env.classList.add("open");
   $("tap").classList.add("hidden");
-  setTimeout(() => $("envStage").classList.add("leave"), 1600);
+  const leaveDelay = prefersReducedMotion ? 120 : 1600;
+  const showDelay = prefersReducedMotion ? 260 : 2200;
+  setTimeout(() => $("envStage").classList.add("leave"), leaveDelay);
   setTimeout(() => {
     $("envStage").classList.add("hidden");
     $("card").classList.remove("hidden");
     $("yes").focus({ preventScroll: true });
     petals(10);
-  }, 2200);
+  }, showDelay);
 }
 env.addEventListener("click", openEnv);
 env.addEventListener("keydown", e => {
@@ -692,45 +742,111 @@ function placeNo(){
   const nW = no.offsetWidth;
   const nH = no.offsetHeight;
   const y = yes.getBoundingClientRect();
-  const safeTop = Math.max(76, (y.bottom - b.top) + 12);
-  const maxTop = Math.max(safeTop, b.height - nH);
+  const safeTop = Math.max(82, Math.ceil((y.bottom - b.top) + 14));
+  const maxTop = Math.max(safeTop, b.height - nH - 2);
   const top = safeTop + Math.random() * Math.max(0, maxTop - safeTop);
-  const left = Math.random() * Math.max(0, b.width - nW);
+  const maxLeft = Math.max(0, b.width - nW);
+  const left = Math.random() * maxLeft;
   no.style.transform = "none";
-  no.style.left = left + "px";
-  no.style.top = top + "px";
+  no.style.left = Math.round(left) + "px";
+  no.style.top = Math.round(top) + "px";
 }
 
 function settleNextTime(){
   settled = true;
   no.textContent = "Next time";
   no.classList.add("settled");
+  const b = btns.getBoundingClientRect();
+  const y = yes.getBoundingClientRect();
+  const safeTop = Math.max(88, Math.ceil((y.bottom - b.top) + 14));
   no.style.left = "50%";
-  no.style.top = "86px";
+  no.style.top = safeTop + "px";
   no.style.transform = "translateX(-50%)";
   bubble.textContent = "No pressure at all—raincheck anytime!";
   $("sub").textContent = "Whenever you're free next time, I'd still love to grab sushi together.";
 }
 
-async function handleNextTimeClick(){
-  const msg = `Hey ${CONFIG.fromName}! Raincheck on sushi this time—let's catch up next time!`;
-  const copied = await copyText(msg);
+/* Verified clipboard copy: only resolves true when either writeText() resolves OR execCommand("copy") returns true */
+async function copyTextVerified(text){
+  if(navigator.clipboard && window.isSecureContext && navigator.clipboard.writeText){
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch(_) {
+      /* Fall through to synchronous execCommand fallback */
+    }
+  }
+  const a = document.createElement("textarea");
+  a.value = text;
+  a.setAttribute("readonly", "");
+  a.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;font-size:16px";
+  document.body.appendChild(a);
+  a.select();
+  a.setSelectionRange(0, text.length);
+  let ok = false;
+  try {
+    ok = document.execCommand("copy") === true;
+  } catch(_) {
+    ok = false;
+  }
+  a.remove();
+  return ok;
+}
+
+function revealFallbackIfStillHere(fallbackEl){
+  setTimeout(() => {
+    if(document.visibilityState === "visible" && fallbackEl){
+      fallbackEl.classList.remove("hidden");
+    }
+  }, 1500);
+}
+
+const raincheckMsg = () => `Hey ${CONFIG.fromName}! Raincheck on sushi this time—let's catch up next time!`;
+
+function handleNextTimeClick(){
+  const msg = raincheckMsg();
+  $("raincheckPreview").textContent = `“${msg}”`;
+  $("raincheckManualText").value = msg;
+  $("raincheckManualBox").classList.add("hidden");
+  $("copyRaincheckBtn").textContent = "1. Copy Raincheck Note";
+  $("copyRaincheckBtn").classList.remove("copied");
+  $("raincheckHint").textContent = "Tap Copy first, then open Instagram to paste & send";
+  $("raincheckHint").classList.remove("ok", "warn");
   bubble.textContent = "Raincheck accepted—anytime!";
   $("ask").classList.add("hidden");
   $("raincheck").classList.remove("hidden");
-  $("raincheckHint").textContent = copied
-    ? "Copied a sweet raincheck note to your clipboard!"
-    : "Tap above to message on Instagram";
 }
 
-$("igRaincheck").addEventListener("click", async e => {
-  e.preventDefault();
-  const msg = `Hey ${CONFIG.fromName}! Raincheck on sushi this time—let's catch up next time!`;
-  await copyText(msg);
-  $("igRaincheck").textContent = "Copied! Opening Instagram…";
-  setTimeout(() => {
-    window.location.href = CONFIG.dmLink;
-  }, 250);
+$("copyRaincheckBtn").addEventListener("click", async () => {
+  const msg = raincheckMsg();
+  const btn = $("copyRaincheckBtn");
+  const hint = $("raincheckHint");
+  btn.textContent = "Copying…";
+  const copied = await copyTextVerified(msg);
+  if(copied){
+    btn.textContent = "✓ Copied Raincheck Note";
+    btn.classList.add("copied");
+    hint.textContent = "Copied! Now tap Open Instagram below and paste";
+    hint.classList.remove("warn");
+    hint.classList.add("ok");
+    $("raincheckManualBox").classList.add("hidden");
+  } else {
+    btn.textContent = "1. Copy Raincheck Note";
+    btn.classList.remove("copied");
+    hint.textContent = "Auto-copy was blocked—select & copy the note box above";
+    hint.classList.remove("ok");
+    hint.classList.add("warn");
+    $("raincheckManualText").value = msg;
+    $("raincheckManualBox").classList.remove("hidden");
+    $("raincheckManualText").focus();
+    $("raincheckManualText").select();
+  }
+});
+
+/* Pure native <a> link handler for Instagram DM Universal Link — zero preventDefault, zero async delay */
+$("igRaincheck").addEventListener("click", () => {
+  $("igRaincheck").textContent = "Opening Instagram…";
+  revealFallbackIfStillHere($("igRaincheckFallback"));
 });
 
 $("reconsider").addEventListener("click", () => {
@@ -784,7 +900,7 @@ CONFIG.favourites.forEach(f => {
   $("chips").appendChild(c);
 });
 
-let selDate = null, selTime = null, needRide = false;
+let selDate = null, selTime = null, needRide = false, copiedReplyText = "";
 $("rideSwitch").addEventListener("click", () => {
   needRide = !needRide;
   $("rideSwitch").setAttribute("aria-checked", String(needRide));
@@ -793,6 +909,7 @@ $("rideSwitch").addEventListener("click", () => {
 
 const fmtDate = d => d.toLocaleDateString("en-GB", {weekday:"short", day:"numeric", month:"short"});
 const fmtLongDate = d => d.toLocaleDateString("en-GB", {weekday:"long", day:"numeric", month:"long"});
+const utcDayDiff = (a, b) => Math.round((Date.UTC(b.getFullYear(), b.getMonth(), b.getDate()) - Date.UTC(a.getFullYear(), a.getMonth(), a.getDate())) / 864e5);
 
 function buildReply(){
   let m = `Sushi at ${CONFIG.where} on ${fmtLongDate(selDate)} at ${selTime} sounds great!`;
@@ -892,7 +1009,7 @@ function refresh(){
   });
 
   if(selDate){
-    const d = Math.round((selDate - today0) / 864e5);
+    const d = utcDayDiff(today0, selDate);
     $("count").textContent = d === 0 ? "Tonight!" : d === 1 ? "Tomorrow!" : `In ${d} days`;
   } else {
     $("count").textContent = "Pick a day";
@@ -903,15 +1020,33 @@ function refresh(){
   $("rideSub").textContent = needRide ? "Yes — I'll come pick you up" : "Slide on if you want me to pick you up";
 
   const ready = Boolean(selDate && selTime);
+  const copyBtn = $("copyReplyBtn");
+  copyBtn.classList.toggle("disabled", !ready);
+  copyBtn.disabled = !ready;
   $("ig").classList.toggle("disabled", !ready);
 
   const prevEl = $("msgPreview");
+  const hint = $("copyHint");
   if(ready){
-    prevEl.textContent = `“${buildReply()}”`;
+    const currentReply = buildReply();
+    prevEl.textContent = `“${currentReply}”`;
     prevEl.classList.remove("empty");
+    $("manualCopyText").value = currentReply;
+    if(copiedReplyText !== currentReply){
+      copyBtn.textContent = "1. Copy Dinner Reply";
+      copyBtn.classList.remove("copied");
+      hint.textContent = "Step 1: Copy your dinner reply, then Step 2: Open Instagram";
+      hint.classList.remove("ok", "warn");
+    }
   } else {
+    copiedReplyText = "";
     prevEl.textContent = "Pick a date & time above to preview your reply…";
     prevEl.classList.add("empty");
+    copyBtn.textContent = "1. Copy Dinner Reply";
+    copyBtn.classList.remove("copied");
+    $("manualCopyBox").classList.add("hidden");
+    hint.textContent = "Copy your reply first, then open Instagram to paste & send";
+    hint.classList.remove("ok", "warn");
   }
 }
 
@@ -929,40 +1064,44 @@ yes.addEventListener("click", () => {
   petals(26);
 });
 
-async function copyText(t){
-  if(navigator.clipboard && window.isSecureContext){
-    try {
-      await navigator.clipboard.writeText(t);
-      return true;
-    } catch(e) {}
-  }
-  const a = document.createElement("textarea");
-  a.value = t;
-  a.setAttribute("readonly", "");
-  a.style.cssText = "position:fixed;top:0;left:0;opacity:0;font-size:16px";
-  document.body.appendChild(a);
-  a.select();
-  a.setSelectionRange(0, t.length);
-  let ok = false;
-  try { ok = document.execCommand("copy"); } catch(e) {}
-  a.remove();
-  return ok;
-}
-
-$("ig").addEventListener("click", async e => {
-  if(!selDate || !selTime){ e.preventDefault(); return; }
-  e.preventDefault();
+/* Dedicated Step 1: Verified async Clipboard copy with honest failure UI */
+$("copyReplyBtn").addEventListener("click", async () => {
+  if(!selDate || !selTime) return;
   const msg = buildReply();
-  const copied = await copyText(msg);
+  const btn = $("copyReplyBtn");
   const hint = $("copyHint");
+  btn.textContent = "Copying…";
+  const copied = await copyTextVerified(msg);
   if(copied){
-    hint.textContent = "Copied! Opening Instagram — just paste & send";
+    copiedReplyText = msg;
+    btn.textContent = "✓ Copied Dinner Reply";
+    btn.classList.add("copied");
+    hint.textContent = "Copied! Now tap Open Instagram below and paste";
+    hint.classList.remove("warn");
     hint.classList.add("ok");
-    $("ig").textContent = "Copied! Opening Instagram…";
+    $("manualCopyBox").classList.add("hidden");
+  } else {
+    copiedReplyText = "";
+    btn.textContent = "1. Copy Dinner Reply";
+    btn.classList.remove("copied");
+    hint.textContent = "Auto-copy was blocked—select & copy the text box above";
+    hint.classList.remove("ok");
+    hint.classList.add("warn");
+    $("manualCopyText").value = msg;
+    $("manualCopyBox").classList.remove("hidden");
+    $("manualCopyText").focus();
+    $("manualCopyText").select();
   }
-  setTimeout(() => {
-    window.location.href = CONFIG.dmLink;
-  }, 300);
+});
+
+/* Dedicated Step 2: Native <a href="https://ig.me/m/ronnn.leong"> Universal Link handoff */
+$("ig").addEventListener("click", e => {
+  if(!selDate || !selTime){
+    e.preventDefault();
+    return;
+  }
+  $("ig").textContent = "Opening Instagram…";
+  revealFallbackIfStillHere($("igFallback"));
 });
 </script>
 </body>
