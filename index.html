@@ -26,8 +26,8 @@
   --line:#e8bcc4;
   --border-strong:#dfa5b1;
   --paper:#fffdf9;
-  --env:#ffd5ca;
-  --env2:#f5b7a7;
+  --env:#ffd1c6;
+  --env2:#f8baa9;
   --btn:#d95b79;
   --btntext:#ffffff;
   --bubble:#ffeceb;
@@ -101,63 +101,161 @@ body{
 }
 @keyframes fall{to{transform:translate3d(var(--dx),110vh,0) rotate(540deg)}}
 
-/* envelope */
-#envStage{text-align:center;transition:opacity .6s,transform .6s}
+/* custom peeking bichon polka-dot envelope */
+#envStage{text-align:center;transition:opacity .6s,transform .6s;width:100%;max-width:420px}
 #envStage.leave{opacity:0;transform:translate3d(0,12px,0) scale(.96)}
 .env-shadow-wrap{
-  position:relative;width:min(320px,84vw);height:210px;margin:90px auto 0;
-  filter:drop-shadow(0 18px 22px #00000030);
+  position:relative;width:min(340px,88vw);height:236px;margin:116px auto 0;
+  filter:drop-shadow(0 20px 26px #00000038);
+}
+@media (max-height: 700px) {
+  .env-shadow-wrap {
+    margin-top: 88px;
+    height: 220px;
+  }
+
+  .tap {
+    margin-top: 32px;
+  }
 }
 .env{
   position:relative;width:100%;height:100%;
   cursor:pointer;
-  transition:transform .4s;animation:float 3s ease-in-out infinite;
+  transform:rotate(1.1deg);
+  transition:transform .4s;animation:float 3.2s ease-in-out infinite;
   will-change:transform;
 }
-@keyframes float{50%{transform:translate3d(0,-6px,0)}}
-.env.open{animation:none}
+@keyframes float{
+  0%,100%{transform:rotate(1.1deg) translate3d(0,0,0)}
+  50%{transform:rotate(1.1deg) translate3d(0,-6px,0)}
+}
+.env.open{animation:none;transform:rotate(0deg)}
 .env>div{position:absolute;left:0;right:0}
-.back{top:0;bottom:0;background:var(--env2);border-radius:8px;z-index:1}
+
+/* peeking bichon head & paws with extra breathing room */
+.peek-dog{
+  top:-84px;left:50%!important;right:auto!important;
+  width:154px;height:112px;margin-left:-77px;
+  z-index:2;pointer-events:none;
+  transition:transform .6s cubic-bezier(.3,1.4,.5,1);
+}
+.peek-dog svg{width:100%;height:100%;display:block;overflow:visible}
+.env.open .peek-dog{transform:translate3d(0,-16px,0) scale(1.04)}
+
+/* paws resting low on top rim so the eyes, cheeks & nose stay clear in Safari */
+.peek-paws{
+  top:-10px;left:50%!important;right:auto!important;
+  width:118px;height:26px;margin-left:-59px;
+  z-index:6;pointer-events:none;
+  transition:transform .5s,opacity .35s;
+}
+.peek-paws svg{width:100%;height:100%;display:block;overflow:visible}
+.env.open .peek-paws{transform:translate3d(0,4px,0);opacity:0}
+
+/* pink ribbon bow on top-left corner */
+.env-bow{
+  top:-16px;left:-14px!important;right:auto!important;
+  width:64px;height:42px;z-index:7;pointer-events:none;
+  transform:rotate(-24deg);
+  filter:drop-shadow(0 3px 6px #d95b7945);
+}
+.env-bow svg{width:100%;height:100%;display:block;overflow:visible}
+
+/* ambient golden 4-point sparkles around envelope */
+.env-sparkle{
+  position:absolute;pointer-events:none;z-index:7;color:#eab44c;
+  animation:twinkle 2.6s ease-in-out infinite;
+}
+.env-sparkle svg{display:block;width:100%;height:100%}
+.env-sparkle.sp-left{left:-26px;top:54%;width:20px;height:20px;animation-delay:.2s}
+.env-sparkle.sp-tr{right:-10px;top:-12px;width:13px;height:13px;opacity:.75;animation-delay:1s}
+.env-sparkle.sp-br{right:14px;bottom:-16px;width:15px;height:15px;opacity:.85;animation-delay:1.7s}
+@keyframes twinkle{
+  0%,100%{transform:scale(1);opacity:.9}
+  50%{transform:scale(.78);opacity:.45}
+}
+
+.back{
+  top:0;bottom:0;background:#f7b9a8;border-radius:12px;z-index:1;
+}
 .letter{
-  left:6%!important;right:6%!important;top:8px;height:88%;
-  background:var(--paper);z-index:2;padding:18px 12px;text-align:center;
+  left:6%!important;right:6%!important;top:10px;height:86%;
+  background:var(--paper);z-index:2;padding:20px 14px;text-align:center;
+  border-radius:10px;
   font-family:var(--serif);font-size:1.38rem;font-style:italic;color:#38222e;
-  transition:transform .8s .5s;box-shadow:0 1px 6px #0002;
+  transition:transform .8s .45s;box-shadow:0 2px 10px #0002;
 }
 .letter small{
   display:block;font-family:var(--sans);font-style:normal;font-weight:700;
   font-size:.6rem;letter-spacing:.28em;text-transform:uppercase;
   color:#d65c7a;margin-top:6px;
 }
+
+/* polka-dot peach body */
 .front{
-  top:0;bottom:0;background:linear-gradient(var(--env),var(--env2));
-  border-radius:8px;z-index:3;
-  -webkit-clip-path:polygon(0 0,50% 58%,100% 0,100% 100%,0 100%);
-  clip-path:polygon(0 0,50% 58%,100% 0,100% 100%,0 100%);
+  top:0;bottom:0;
+  background-color:#ffd0c4;
+  background-image:radial-gradient(circle,#ffe4dc 4.2px,transparent 4.5px);
+  background-size:26px 26px;
+  background-position:13px 13px;
+  border-radius:12px;z-index:3;overflow:hidden;
+  box-shadow:inset 0 0 0 1px #f4b7a788;
 }
-.addr{bottom:18px;left:0!important;right:0!important;z-index:3;text-align:center;color:#5e3d49}
-.addr small{display:block;font-size:.58rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;opacity:.8}
-.addr b{font-family:var(--serif);font-size:1.32rem;font-style:italic;font-weight:600}
+/* subtle diagonal lower pocket shading */
+.front:before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 46%,#f8beae44 100%);
+  -webkit-clip-path:polygon(0 0,50% 56%,100% 0,100% 100%,0 100%);
+  clip-path:polygon(0 0,50% 56%,100% 0,100% 100%,0 100%);
+}
+
+/* SPECIAL DELIVERY FOR YiHwa */
+.addr{
+  bottom:18px;left:0!important;right:0!important;z-index:4;
+  text-align:center;color:#7c525b;padding:0 16px;
+}
+.addr small{
+  display:block;font-size:.62rem;font-weight:700;
+  letter-spacing:.34em;text-transform:uppercase;
+  color:#8f656e;margin-bottom:4px;
+}
+.addr b{
+  display:block;font-family:var(--serif);font-size:1.58rem;
+  font-style:italic;font-weight:600;color:#6c424c;line-height:1.15;
+}
+
+/* top triangular flap with matching polka dots */
 .flap{
-  top:0;height:58%;background:linear-gradient(var(--env2),var(--env));z-index:4;
+  top:0;height:56%;
+  background-color:#ffcfc3;
+  background-image:radial-gradient(circle,#ffe4dc 4.2px,transparent 4.5px);
+  background-size:26px 26px;
+  background-position:13px 13px;
+  z-index:5;
   -webkit-clip-path:polygon(0 0,100% 0,50% 100%);
   clip-path:polygon(0 0,100% 0,50% 100%);
   transform-origin:top;transition:transform .7s,z-index 0s .35s;
-  border-radius:8px 8px 0 0;
+  border-radius:12px 12px 0 0;
+  filter:drop-shadow(0 3px 6px #d48c7d2e);
 }
+
+/* rose-pink wax seal with 4-diamond emblem */
 .seal{
-  top:calc(58% - 24px)!important;left:50%!important;right:auto!important;
-  width:48px;height:48px;margin-left:-24px;border-radius:50%;
-  background:radial-gradient(circle at 35% 30%,#f59ab0,#c94a69);
+  top:calc(56% - 29px)!important;left:50%!important;right:auto!important;
+  width:58px;height:58px;margin-left:-29px;border-radius:50%;
+  background:radial-gradient(circle at 35% 28%,#eb8ca6,#d36583 72%,#c15270);
   color:#fff6e8;display:flex;align-items:center;justify-content:center;
-  z-index:5;font-family:var(--serif);font-size:1.4rem;
-  box-shadow:0 3px 8px #0006,inset 0 0 0 3px #ffffff24;transition:opacity .3s;
+  z-index:6;
+  box-shadow:0 6px 14px #7833464d,inset 0 0 0 3px #f39fb580,inset 0 2px 4px #ffffff55;
+  transition:opacity .3s,transform .3s;
 }
+.env:hover .seal{transform:scale(1.05)}
+.seal svg{width:24px;height:24px;display:block}
 .env.open .flap{transform:rotateX(180deg);z-index:1}
 .env.open .seal{opacity:0}
-.env.open .letter{transform:translate3d(0,-105px,0)}
+.env.open .letter{transform:translate3d(0,-112px,0)}
 .tap{
-  margin-top:46px;font-size:.7rem;font-weight:700;letter-spacing:.32em;
+  margin-top:42px;font-size:.7rem;font-weight:700;letter-spacing:.32em;
   text-transform:uppercase;color:var(--muted);animation:pulse 2s infinite;
 }
 @keyframes pulse{50%{opacity:.4}}
@@ -436,12 +534,91 @@ select:focus{outline:none}
 <div id="envStage">
   <div class="env-shadow-wrap">
     <div class="env" id="env" role="button" aria-label="Open the envelope" tabindex="0">
+      <!-- Ambient sparkles -->
+      <span class="env-sparkle sp-left" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 1l2.8 8.2L23 12l-8.2 2.8L12 23l-2.8-8.2L1 12l8.2-2.8z"/></svg>
+      </span>
+      <span class="env-sparkle sp-tr" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 1l2.8 8.2L23 12l-8.2 2.8L12 23l-2.8-8.2L1 12l8.2-2.8z"/></svg>
+      </span>
+      <span class="env-sparkle sp-br" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 1l2.8 8.2L23 12l-8.2 2.8L12 23l-2.8-8.2L1 12l8.2-2.8z"/></svg>
+      </span>
+
+      <!-- Peeking fluffy bichon head with breathing room above the rim -->
+      <div class="peek-dog" aria-hidden="true">
+        <svg viewBox="0 0 180 132">
+          <!-- Pink-outlined fluffy cloud puffs -->
+          <g fill="#ffffff" stroke="#ef9cb0" stroke-width="3.2" stroke-linejoin="round">
+            <circle cx="44" cy="74" r="21"/>
+            <circle cx="136" cy="74" r="21"/>
+            <circle cx="50" cy="45" r="22"/>
+            <circle cx="130" cy="45" r="22"/>
+            <circle cx="71" cy="27" r="22"/>
+            <circle cx="109" cy="27" r="22"/>
+            <circle cx="90" cy="23" r="23"/>
+          </g>
+          <!-- Clean white interior face fill -->
+          <ellipse cx="90" cy="64" rx="48" ry="37" fill="#ffffff"/>
+          <!-- Inner pink fluff lines -->
+          <g fill="none" stroke="#ef9cb0" stroke-width="2.4" stroke-linecap="round">
+            <path d="M68 30c3 7 8 11 13 12"/>
+            <path d="M112 30c-3 7-8 11-13 12"/>
+            <path d="M47 57c5 4 10 6 15 6"/>
+            <path d="M133 57c-5 4-10 6-15 6"/>
+          </g>
+          <!-- Rosy cheeks -->
+          <ellipse cx="64" cy="76" rx="8" ry="4.8" fill="#ffd5df"/>
+          <ellipse cx="116" cy="76" rx="8" ry="4.8" fill="#ffd5df"/>
+          <!-- Glossy dark eyes -->
+          <circle cx="72" cy="66" r="6.2" fill="#231c20"/>
+          <circle cx="70" cy="63.8" r="2.2" fill="#ffffff"/>
+          <circle cx="108" cy="66" r="6.2" fill="#231c20"/>
+          <circle cx="106" cy="63.8" r="2.2" fill="#ffffff"/>
+          <!-- Shiny button nose -->
+          <ellipse cx="90" cy="77" rx="7.4" ry="5.2" fill="#231c20"/>
+          <ellipse cx="87.8" cy="75.2" rx="2.3" ry="1.2" fill="#ffffff" opacity=".75"/>
+        </svg>
+      </div>
+
+      <!-- Little paws resting along the top rim -->
+      <div class="peek-paws" aria-hidden="true">
+        <svg viewBox="0 0 140 32">
+          <g fill="#ffffff" stroke="#ef9cb0" stroke-width="3">
+            <ellipse cx="42" cy="16" rx="21" ry="11.5"/>
+            <ellipse cx="98" cy="16" rx="21" ry="11.5"/>
+          </g>
+          <g stroke="#ef9cb0" stroke-width="2.2" stroke-linecap="round">
+            <path d="M34 11.5v9M42 10.5v11M50 11.5v9"/>
+            <path d="M90 11.5v9M98 10.5v11M106 11.5v9"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Pink ribbon bow on the top-left corner -->
+      <div class="env-bow" aria-hidden="true">
+        <svg viewBox="0 0 74 48">
+          <path d="M35 23 L26 44 L34 39 L37 44 L39 24 Z" fill="#f38ba5"/>
+          <path d="M39 23 L48 44 L40 39 L37 44 L35 24 Z" fill="#f38ba5"/>
+          <path d="M37 22 C24 4, 4 6, 4 21 C4 36, 24 36, 37 22 Z" fill="#f59ab1"/>
+          <path d="M37 22 C50 4, 70 6, 70 21 C70 36, 50 36, 37 22 Z" fill="#f59ab1"/>
+          <circle cx="37" cy="22" r="6.8" fill="#f38ba5" stroke="#ffd6e0" stroke-width="1.8"/>
+        </svg>
+      </div>
+
       <div class="back"></div>
       <div class="letter">A little note for you<small>Dinner Invitation</small></div>
       <div class="front"></div>
-      <div class="addr"><small>Specially for</small><b id="envName"></b></div>
+      <div class="addr"><small>Special delivery for</small><b id="envName"></b></div>
       <div class="flap"></div>
-      <div class="seal" id="seal"></div>
+      <div class="seal" id="seal" aria-hidden="true">
+        <svg viewBox="0 0 28 28">
+          <polygon points="14,3 18.2,7.2 14,11.4 9.8,7.2" fill="#fff5ea"/>
+          <polygon points="8.6,8.4 12.8,12.6 8.6,16.8 4.4,12.6" fill="#fff5ea"/>
+          <polygon points="19.4,8.4 23.6,12.6 19.4,16.8 15.2,12.6" fill="#fff5ea"/>
+          <polygon points="14,13.8 18.2,18 14,22.2 9.8,18" fill="#fff5ea"/>
+        </svg>
+      </div>
     </div>
   </div>
   <div class="tap" id="tap">Tap the seal to open</div>
@@ -665,7 +842,6 @@ select:focus{outline:none}
 /* EDIT THESE */
 const CONFIG = {
   herName: "Yi Hwa",
-  initial: "❖",
   dmLink: "https://ig.me/m/ronnn.leong",
   profileLink: "https://www.instagram.com/ronnn.leong/",
   month: 11, year: 2026, // 11 = December (0 = January)
@@ -675,13 +851,12 @@ const CONFIG = {
   defaultTime: "7:00 PM",
   where: "Tono Izakaya",
   fromName: "Ron",
-  favourites: ["Sashimi", "Maki", "Don", "Yakitori", "Ramen", "Handroll"],
+  favourites: ["Salmon", "Ebi", "Tamago", "Maki", "Tuna", "Matcha ice cream"],
   maxDodges: 6 // dodges 6 times, then settles as "Next time" on the 7th tap
 };
 
 const $ = id => document.getElementById(id);
 ["name","envName"].forEach(i => $(i).textContent = CONFIG.herName);
-$("seal").textContent = CONFIG.initial;
 $("d-where").textContent = CONFIG.where;
 $("from").textContent = CONFIG.fromName;
 $("ig").href = CONFIG.dmLink;
