@@ -4,15 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>A Dinner Invitation</title>
-<meta name="theme-color" content="#fff1eb">
+<meta name="theme-color" content="#fff1eb" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#23161f" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="format-detection" content="telephone=no">
 <meta property="og:title" content="Sushi Dinner Invitation">
 <meta property="og:description" content="Ron has a small question for you.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
+  color-scheme:light dark;
   --bg:#ffefe8;
   --bg2:#ffd8dc;
   --card:#fffcf9;
@@ -32,11 +35,17 @@
   --field-hover:#ffe9e4;
   --stub:#fdf1ee;
   --serif:'Fraunces',Georgia,'Times New Roman',serif;
-  --sans:'Nunito','Helvetica Neue',Arial,sans-serif;
+  --sans:'Nunito',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
   box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+:root[data-theme="light"]{
+  color-scheme:light;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
+    color-scheme:dark;
     --bg:#23161f;
     --bg2:#341f2d;
     --card:#311f2c;
@@ -55,6 +64,7 @@
   }
 }
 :root[data-theme="dark"]{
+  color-scheme:dark;
   --bg:#23161f;
   --bg2:#341f2d;
   --card:#311f2c;
@@ -74,34 +84,37 @@
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
 button,.btn,.env{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-button:focus-visible,.btn:focus-visible,.env:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
-button{min-height:44px}
-#ig[aria-disabled="true"]{opacity:.42;pointer-events:none;cursor:not-allowed}
 button{-webkit-appearance:none;appearance:none}
 body{
   margin:0;min-height:100vh;min-height:100dvh;
   display:flex;align-items:center;justify-content:center;
   font-family:var(--sans);font-weight:400;color:var(--ink);
   background:radial-gradient(ellipse at 50% 0%,var(--bg2),var(--bg) 70%);
-  padding:calc(24px + env(safe-area-inset-top,0px)) 16px calc(24px + env(safe-area-inset-bottom,0px));overflow-x:hidden;
+  padding:24px 16px;overflow-x:hidden;
 }
 .hidden{display:none!important}
 .petal{
   position:fixed;top:-20px;width:10px;height:14px;
   border-radius:50% 0 50% 0;pointer-events:none;
   animation:fall linear forwards;z-index:20;opacity:.85;
+  will-change:transform;
 }
-@keyframes fall{to{transform:translate(var(--dx),110vh) rotate(540deg)}}
+@keyframes fall{to{transform:translate3d(var(--dx),110vh,0) rotate(540deg)}}
 
 /* envelope */
 #envStage{text-align:center;transition:opacity .6s,transform .6s}
-#envStage.leave{opacity:0;transform:translateY(12px) scale(.96)}
-.env{
+#envStage.leave{opacity:0;transform:translate3d(0,12px,0) scale(.96)}
+.env-shadow-wrap{
   position:relative;width:min(320px,84vw);height:210px;margin:90px auto 0;
-  cursor:pointer;filter:drop-shadow(0 18px 22px #00000030);
-  transition:transform .4s;animation:float 3s ease-in-out infinite;
+  filter:drop-shadow(0 18px 22px #00000030);
 }
-@keyframes float{50%{transform:translateY(-6px)}}
+.env{
+  position:relative;width:100%;height:100%;
+  cursor:pointer;
+  transition:transform .4s;animation:float 3s ease-in-out infinite;
+  will-change:transform;
+}
+@keyframes float{50%{transform:translate3d(0,-6px,0)}}
 .env.open{animation:none}
 .env>div{position:absolute;left:0;right:0}
 .back{top:0;bottom:0;background:var(--env2);border-radius:8px;z-index:1}
@@ -142,7 +155,7 @@ body{
 }
 .env.open .flap{transform:rotateX(180deg);z-index:1}
 .env.open .seal{opacity:0}
-.env.open .letter{transform:translateY(-105px)}
+.env.open .letter{transform:translate3d(0,-105px,0)}
 .tap{
   margin-top:46px;font-size:.7rem;font-weight:700;letter-spacing:.32em;
   text-transform:uppercase;color:var(--muted);animation:pulse 2s infinite;
@@ -160,7 +173,7 @@ body{
   content:"";position:absolute;top:9px;left:9px;right:9px;bottom:9px;
   border:1.5px dashed var(--line);border-radius:22px;pointer-events:none;
 }
-@keyframes rise{from{opacity:0;transform:translateY(28px)}}
+@keyframes rise{from{opacity:0;transform:translate3d(0,28px,0)}}
 .bubble{
   position:relative;box-shadow:0 3px 8px #d95b791f;display:inline-block;
   background:var(--bubble);border:1.5px solid var(--border-strong);padding:6px 16px;
@@ -173,23 +186,19 @@ body{
   border-bottom:1.5px solid var(--border-strong);transform:rotate(45deg);
 }
 .mascot{width:166px;height:156px;display:block;margin:0 auto 2px;overflow:visible}
-.dogbody{transform-origin:100px 120px;animation:bob 3.2s ease-in-out infinite}
-@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.dogbody{animation:bob 3s ease-in-out infinite}
+@keyframes bob{50%{transform:translate3d(0,-4px,0)}}
 .eye{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
 @keyframes blink{0%,95%,100%{transform:scaleY(1)}97.5%{transform:scaleY(.1)}}
 .tail{transform-box:fill-box;transform-origin:left center;animation:wag 1.6s ease-in-out infinite}
-@keyframes wag{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(18deg)}}
+@keyframes wag{50%{transform:rotate(16deg)}}
 .tongue{transform-box:fill-box;transform-origin:top;animation:pant 1.4s ease-in-out infinite}
-@keyframes pant{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.13)}}
+@keyframes pant{50%{transform:scaleY(1.12)}}
 .brow,.sparkle{display:none}
 .sad .brow{display:block}.sad .tongue{display:none}
-.happy .sparkle{display:block;animation:twinkle 1.1s ease-in-out infinite alternate}.happy .tail{animation-duration:.32s}
-@keyframes twinkle{from{opacity:.45;transform:scale(.85)}to{opacity:1;transform:scale(1.08)}}
-.happy .dogbody{animation:jump .85s ease-in-out infinite}
-.sad .dogbody{animation:sadBob 2.4s ease-in-out infinite}
-.sad .tail{animation-duration:2.8s}
-@keyframes sadBob{0%,100%{transform:translateY(1px)}50%{transform:translateY(3px)}}
-@keyframes jump{50%{transform:translateY(-10px)}}
+.happy .sparkle{display:block}.happy .tail{animation-duration:.3s}
+.happy .dogbody{animation:jump .7s ease-in-out infinite}
+@keyframes jump{50%{transform:translate3d(0,-10px,0)}}
 .eyebrow{font-size:.64rem;font-weight:700;letter-spacing:.34em;text-transform:uppercase;color:var(--accent-deep);margin-top:4px}
 h1{font-family:var(--serif);font-weight:600;font-size:2.02rem;line-height:1.15;margin:10px 0 0;color:var(--ink)}
 h1 em{font-style:italic;color:var(--gold)}
@@ -215,7 +224,12 @@ button,.btn{
   position:absolute;border-radius:999px;background:var(--field);
   border:1.5px solid var(--border-strong);color:var(--muted);padding:10px 18px;
   font-size:.65rem;font-weight:600;white-space:nowrap;
-  transition:left .32s cubic-bezier(.3,1.5,.5,1),top .32s cubic-bezier(.3,1.5,.5,1);
+  transition:left .32s cubic-bezier(.3,1.5,.5,1),top .32s cubic-bezier(.3,1.5,.5,1),background .2s,color .2s,border-color .2s;
+}
+.ghost.settled{
+  background:var(--card);
+  color:var(--ink);
+  border-color:var(--gold);
 }
 
 /* done / high-contrast booking layout */
@@ -235,7 +249,7 @@ button,.btn{
 .section-label small{font-weight:600;letter-spacing:.08em;text-transform:none;color:var(--muted);font-size:.7rem}
 .quick-dates{
   display:flex;gap:7px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;
-  scrollbar-width:none;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;
 }
 .quick-dates::-webkit-scrollbar{display:none}
 .qchip{
@@ -275,11 +289,6 @@ select{
 }
 select:focus{outline:none}
 
-select option{
-  background:var(--card);
-  color:var(--ink);
-}
-
 .time-pills{
   display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;
 }
@@ -312,12 +321,6 @@ select option{
 .t-cell small{display:block;font-size:.58rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-deep);margin-bottom:2px}
 .t-cell span{font-family:var(--serif);font-size:1.05rem;font-weight:600;color:var(--ink);display:block}
 .t-cell span.empty{color:var(--muted);font-weight:400;font-style:italic}
-.t-cell.full{grid-column:1 / -1;padding-top:8px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
-.cal-link{
-  font-size:.64rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--accent-deep);text-decoration:none;border-bottom:1.5px solid var(--accent-deep);
-  padding-bottom:1px;
-}
 
 .ride-box{
   display:flex;align-items:center;justify-content:space-between;gap:12px;
@@ -358,37 +361,34 @@ select option{
 .chip:hover{background:var(--field-hover);border-color:var(--gold)}
 .chip.on{background:var(--btn);border-color:var(--btn);color:var(--btntext)}
 
-.actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.actions .primary{flex:1 1 200px}
-.action-status{min-height:1.4em;margin-top:10px;text-align:center;font-size:.78rem;color:var(--accent-deep);font-weight:700}
+.actions{display:flex;flex-direction:column;gap:8px;align-items:center}
+.actions .primary{width:100%}
+.copy-hint{
+  font-size:.7rem;font-weight:600;color:var(--muted);
+  min-height:1.1em;transition:color .2s;
+}
+.copy-hint.ok{color:var(--accent-deep);font-weight:700}
 
 .bow{position:absolute;top:-17px;left:50%;margin-left:-30px;width:60px;height:34px;z-index:2;filter:drop-shadow(0 3px 4px #d95b7945)}
 .bow svg{width:100%;height:100%;display:block}
 .bow path,.bow circle{fill:var(--btn)}
 .bow circle{stroke:#ffffff77;stroke-width:1.5}
 .primary.disabled{opacity:.42;pointer-events:none}
-@media (max-width:380px){
-  .card{padding:30px 16px 24px;border-radius:24px}
-  .mascot{width:150px;height:146px}
-  h1{font-size:1.8rem}
-  .booking-panel{padding:11px}
-  .btns{height:156px}
-}
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
-}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
 <body>
 
 <div id="envStage">
-  <div class="env" id="env" role="button" aria-label="Open the envelope" aria-describedby="tap" tabindex="0">
-    <div class="back"></div>
-    <div class="letter">A little note for you<small>Dinner Invitation</small></div>
-    <div class="front"></div>
-    <div class="addr"><small>Specially for</small><b id="envName"></b></div>
-    <div class="flap"></div>
-    <div class="seal" id="seal"></div>
+  <div class="env-shadow-wrap">
+    <div class="env" id="env" role="button" aria-label="Open the envelope" tabindex="0">
+      <div class="back"></div>
+      <div class="letter">A little note for you<small>Dinner Invitation</small></div>
+      <div class="front"></div>
+      <div class="addr"><small>Specially for</small><b id="envName"></b></div>
+      <div class="flap"></div>
+      <div class="seal" id="seal"></div>
+    </div>
   </div>
   <div class="tap" id="tap">Tap the seal to open</div>
 </div>
@@ -501,8 +501,8 @@ select option{
     <p id="sub">Join me for a cozy sushi dinner? Good food, zero rush, and a great evening ahead.</p>
     <div class="sign">Warmly, <span id="from"></span> ✿</div>
     <div class="btns" id="btns">
-      <button class="primary" id="yes">Count me in</button>
-      <button class="ghost" id="no">Maybe next time</button>
+      <button type="button" class="primary" id="yes">Count me in</button>
+      <button type="button" class="ghost" id="no">Maybe next time</button>
     </div>
   </div>
 
@@ -560,10 +560,6 @@ select option{
           <small>Spot</small>
           <span id="d-where"></span>
         </div>
-        <div class="t-cell full">
-          <span class="empty" id="calHint">Select date &amp; time for calendar</span>
-          <a class="cal-link hidden" id="calLink" href="#">+ Add to iOS Calendar</a>
-        </div>
       </div>
     </div>
 
@@ -571,9 +567,9 @@ select option{
     <div class="chips" id="chips"></div>
 
     <div class="actions">
-      <a class="btn primary disabled" id="ig" href="https://ig.me/m/ronnn.leong" rel="noopener" aria-disabled="true">Copy &amp; Open Instagram</a>
+      <a class="btn primary disabled" id="ig" href="https://ig.me/m/ronnn.leong" rel="noopener">Send on Instagram</a>
+      <div class="copy-hint" id="copyHint" aria-live="polite">Copies your message automatically when you tap</div>
     </div>
-    <p class="action-status" id="actionStatus" role="status" aria-live="polite"></p>
   </div>
 </div>
 
@@ -585,14 +581,14 @@ const CONFIG = {
   dmLink: "https://ig.me/m/ronnn.leong",
   profileLink: "https://www.instagram.com/ronnn.leong/",
   month: 11, year: 2026, // 11 = December (0 = January)
-  timeZone: "Asia/Kuala_Lumpur", // Change this if the dinner is in another timezone
   blockedDates: ["2026-12-05", "2026-12-17", "2026-12-18", "2026-12-19", "2026-12-20"],
   startHour: 11, endHour: 21, stepMinutes: 30,
   quickTimes: ["6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM"],
   defaultTime: "7:00 PM",
   where: "Tono Izakaya",
   fromName: "Ron",
-  favourites: ["Salmon", "Ebi", "Tamago", "Maki", "Tuna", "Matcha ice cream"]
+  favourites: ["Salmon", "Ebi", "Tamago", "Maki", "Tuna", "Matcha ice cream"],
+  maxDodges: 6 // dodges 6 times, then settles as "Next time" on the 7th tap
 };
 
 const $ = id => document.getElementById(id);
@@ -632,6 +628,7 @@ function openEnv(){
   setTimeout(() => {
     $("envStage").classList.add("hidden");
     $("card").classList.remove("hidden");
+    $("yes").focus({ preventScroll: true });
     petals(10);
   }, 2200);
 }
@@ -640,7 +637,7 @@ env.addEventListener("keydown", e => {
   if(e.key === "Enter" || e.key === " "){ e.preventDefault(); openEnv(); }
 });
 
-/* playful decline with touch/click debounce & safe bounds */
+/* playful decline: dodges 6 times, then turns into clickable "Next time" */
 const card = $("card"), no = $("no"), yes = $("yes"), btns = $("btns"), bubble = $("bubble");
 const pleas = [
   "Are you sure?",
@@ -648,51 +645,83 @@ const pleas = [
   "Pretty please?",
   "Just one dinner!",
   "Okay, last try!",
-  "Say yes?"
+  "Still no? Tap again…"
 ];
 const bubbles = [
   "Wait—don't go!",
   "My ears just drooped…",
   "Pretty please with matcha?",
   "*puppy eyes activated*",
-  "Sushi tastes better with you!"
+  "Sushi tastes better with you!",
+  "Okay, I won't run anymore…"
 ];
-let tries = 0, scale = 1;
+let tries = 0, scale = 1, lastTouch = 0, settled = false;
 
 function placeNo(){
-  const bounds = btns.getBoundingClientRect();
-  const noRect = no.getBoundingClientRect();
-  const yesRect = yes.getBoundingClientRect();
-  const width = noRect.width;
-  const height = noRect.height;
-  const minTop = Math.min(btns.clientHeight - height, Math.max(68, yesRect.bottom - bounds.top + 12));
-  const maxTop = Math.max(minTop, btns.clientHeight - height);
-  const maxLeft = Math.max(0, btns.clientWidth - width);
-  const top = minTop + Math.random() * Math.max(0, maxTop - minTop);
-  const left = Math.random() * maxLeft;
+  const b = btns.getBoundingClientRect();
+  const nW = no.offsetWidth;
+  const nH = no.offsetHeight;
+  const y = yes.getBoundingClientRect();
+  const safeTop = Math.max(76, (y.bottom - b.top) + 12);
+  const maxTop = Math.max(safeTop, b.height - nH);
+  const top = safeTop + Math.random() * Math.max(0, maxTop - safeTop);
+  const left = Math.random() * Math.max(0, b.width - nW);
   no.style.transform = "none";
-  no.style.left = `${left}px`;
-  no.style.top = `${top}px`;
+  no.style.left = left + "px";
+  no.style.top = top + "px";
 }
 
-function dodge(e){
-  if(e.type === "pointerenter" && e.pointerType !== "mouse") return;
-  if(e.cancelable) e.preventDefault();
-  no.textContent = pleas[Math.min(tries, pleas.length - 1)];
-  bubble.textContent = bubbles[tries % bubbles.length];
-  tries++;
-  scale = Math.min(scale + 0.06, 1.24);
-  yes.style.transform = `translateX(-50%) scale(${scale})`;
-  card.classList.add("sad");
-  $("sub").textContent = "Look at those sad puppy eyes—won't you reconsider for a little sushi?";
-  placeNo();
+function settleNextTime(){
+  settled = true;
+  no.textContent = "Next time";
+  no.classList.add("settled");
+  no.style.left = "50%";
+  no.style.top = "86px";
+  no.style.transform = "translateX(-50%)";
+  bubble.textContent = "No pressure at all—raincheck anytime!";
+  $("sub").textContent = "Whenever you're free next time, I'd still love to grab sushi together.";
 }
+
+async function handleNextTimeClick(){
+  const msg = "Hey Ron! Raincheck on sushi this time—let's catch up next time!";
+  await copyText(msg);
+  no.textContent = "Copied! Opening IG…";
+  bubble.textContent = "Copied a sweet raincheck note—paste it in DM!";
+  setTimeout(() => {
+    window.location.href = CONFIG.dmLink;
+  }, 300);
+}
+
+function handleNo(e){
+  if(e.type === "touchstart") lastTouch = Date.now();
+  if(e.type === "click" && Date.now() - lastTouch < 400) return;
+
+  if(settled){
+    if(e.type === "mouseenter") return;
+    e.preventDefault();
+    handleNextTimeClick();
+    return;
+  }
+
+  e.preventDefault();
+  if(tries < CONFIG.maxDodges){
+    no.textContent = pleas[Math.min(tries, pleas.length - 1)];
+    bubble.textContent = bubbles[tries % bubbles.length];
+    tries++;
+    scale = Math.min(scale + 0.05, 1.22);
+    yes.style.transform = "translateX(-50%) scale(" + scale + ")";
+    card.classList.add("sad");
+    $("sub").textContent = "Look at those sad puppy eyes—won't you reconsider for a little sushi?";
+    placeNo();
+  } else {
+    settleNextTime();
+  }
+}
+
 no.style.left = "50%";
 no.style.top = "84px";
 no.style.transform = "translateX(-50%)";
-no.addEventListener("pointerenter", dodge);
-no.addEventListener("pointerdown", e => { if(e.pointerType !== "mouse") dodge(e); });
-no.addEventListener("click", e => { if(e.detail === 0) dodge(e); });
+["mouseenter","touchstart","click"].forEach(ev => no.addEventListener(ev, handleNo, {passive:false}));
 
 /* favourites + reply */
 const picked = new Set();
@@ -801,62 +830,6 @@ $("timeSel").addEventListener("change", e => {
   refresh();
 });
 
-function escapeICS(value){
-  return String(value ?? "")
-    .replace(/\\/g, "\\\\")
-    .replace(/\r?\n/g, "\\n")
-    .replace(/,/g, "\\,")
-    .replace(/;/g, "\\;");
-}
-
-function buildICS(dateObj, timeStr){
-  const [hm, mer] = timeStr.split(" ");
-  let [h, m] = hm.split(":").map(Number);
-  if(mer === "PM" && h !== 12) h += 12;
-  if(mer === "AM" && h === 12) h = 0;
-  const start = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate(), h, m);
-  const end = new Date(start.getTime() + 90 * 60000);
-  const pad = n => String(n).padStart(2, "0");
-  const localStamp = d => `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
-  const utcStamp = d => `${d.getUTCFullYear()}${pad(d.getUTCMonth()+1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`;
-  const uid = `dinner-${localStamp(start)}-${Math.random().toString(36).slice(2,8)}@invitation`;
-  const summary = escapeICS(`Sushi Dinner with ${CONFIG.fromName}`);
-  const parts = [`Pick-up ride: ${needRide ? "Yes" : "No"}`];
-  if(picked.size) parts.push(`Favourites: ${[...picked].join(", ")}`);
-  const desc = escapeICS(parts.join(" | "));
-  const location = escapeICS(CONFIG.where);
-  const tz = CONFIG.timeZone || "Asia/Kuala_Lumpur";
-  const ics = [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
-    "PRODID:-//Dinner Invitation//EN",
-    "CALSCALE:GREGORIAN",
-    "METHOD:PUBLISH",
-    "BEGIN:VTIMEZONE",
-    `TZID:${tz}`,
-    "BEGIN:STANDARD",
-    "DTSTART:19700101T000000",
-    "TZOFFSETFROM:+0800",
-    "TZOFFSETTO:+0800",
-    "TZNAME:MYT",
-    "END:STANDARD",
-    "END:VTIMEZONE",
-    "BEGIN:VEVENT",
-    `UID:${uid}`,
-    `DTSTAMP:${utcStamp(new Date())}`,
-    `DTSTART;TZID=${tz}:${localStamp(start)}`,
-    `DTEND;TZID=${tz}:${localStamp(end)}`,
-    `SUMMARY:${summary}`,
-    `DESCRIPTION:${desc}`,
-    `LOCATION:${location}`,
-    "END:VEVENT",
-    "END:VCALENDAR",
-    ""
-  ].join("\r\n");
-  const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
-  return URL.createObjectURL(blob);
-}
-
 function refresh(){
   const dEl = $("d-date");
   const tEl = $("d-time");
@@ -885,18 +858,6 @@ function refresh(){
 
   const ready = Boolean(selDate && selTime);
   $("ig").classList.toggle("disabled", !ready);
-  $("ig").setAttribute("aria-disabled", String(!ready));
-  $("calLink").classList.toggle("hidden", !ready);
-  $("calHint").classList.toggle("hidden", ready);
-
-  if(ready){
-    const prevHref = $("calLink").dataset.blobUrl;
-    if(prevHref) URL.revokeObjectURL(prevHref);
-    const url = buildICS(selDate, selTime);
-    $("calLink").dataset.blobUrl = url;
-    $("calLink").href = url;
-    $("calLink").setAttribute("download", "sushi-dinner.ics");
-  }
 }
 
 yes.addEventListener("click", () => {
@@ -913,46 +874,41 @@ yes.addEventListener("click", () => {
   petals(26);
 });
 
-async function copyText(text){
+async function copyText(t){
   if(navigator.clipboard && window.isSecureContext){
-    try{
-      await navigator.clipboard.writeText(text);
+    try {
+      await navigator.clipboard.writeText(t);
       return true;
-    }catch(error){ /* Try the iOS-compatible selection fallback below. */ }
+    } catch(e) {}
   }
-  const field = document.createElement("textarea");
-  field.value = text;
-  field.setAttribute("readonly", "");
-  field.setAttribute("aria-hidden", "true");
-  field.style.cssText = "position:fixed;left:-9999px;top:0;font-size:16px;opacity:0";
-  document.body.appendChild(field);
-  field.focus();
-  field.select();
-  field.setSelectionRange(0, field.value.length);
-  let copied = false;
-  try{ copied = document.execCommand("copy"); }catch(error){}
-  field.remove();
-  return copied;
+  const a = document.createElement("textarea");
+  a.value = t;
+  a.setAttribute("readonly", "");
+  a.style.cssText = "position:fixed;top:0;left:0;opacity:0;font-size:16px";
+  document.body.appendChild(a);
+  a.select();
+  a.setSelectionRange(0, t.length);
+  let ok = false;
+  try { ok = document.execCommand("copy"); } catch(e) {}
+  a.remove();
+  return ok;
 }
 
 $("ig").addEventListener("click", async e => {
+  if(!selDate || !selTime){ e.preventDefault(); return; }
   e.preventDefault();
-  if(!selDate || !selTime) return;
-  const message = buildReply();
-  const status = $("actionStatus");
-  const copied = await copyText(message);
-  status.textContent = copied
-    ? "Your dinner details are copied. Opening Instagram…"
-    : "Opening Instagram. If needed, you can copy your dinner details from the booking summary.";
-  // Same-tab navigation avoids iOS Safari popup blocking after the async clipboard step.
-  window.location.href = CONFIG.dmLink;
+  const msg = buildReply();
+  const copied = await copyText(msg);
+  const hint = $("copyHint");
+  if(copied){
+    hint.textContent = "Copied! Opening Instagram — just paste & send";
+    hint.classList.add("ok");
+    $("ig").textContent = "Copied! Opening Instagram…";
+  }
+  setTimeout(() => {
+    window.location.href = CONFIG.dmLink;
+  }, 300);
 });
-
-window.addEventListener("beforeunload", () => {
-  const url = $("calLink").dataset.blobUrl;
-  if(url) URL.revokeObjectURL(url);
-});
-
 </script>
 </body>
 </html>
