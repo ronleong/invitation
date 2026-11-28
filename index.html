@@ -312,6 +312,36 @@ select option{
   padding-bottom:1px;
 }
 
+.ride-box{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:var(--card);border:1.5px solid var(--border-strong);border-radius:14px;
+  padding:9px 12px;margin-bottom:10px;box-shadow:0 2px 6px #0000000a;
+}
+.ride-copy{text-align:left}
+.ride-copy b{
+  display:block;font-size:.66rem;font-weight:800;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink);
+}
+.ride-copy small{
+  display:block;font-size:.72rem;font-weight:600;color:var(--muted);margin-top:1px;
+}
+.switch{
+  position:relative;flex:0 0 auto;width:48px;height:28px;border-radius:999px;
+  background:var(--field);border:1.5px solid var(--border-strong);padding:0;
+  transition:background .22s,border-color .22s;
+}
+.switch[aria-checked="true"]{
+  background:var(--btn);border-color:var(--btn);box-shadow:0 3px 10px #d95b7945;
+}
+.switch-thumb{
+  position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;
+  background:#ffffff;box-shadow:0 2px 5px #00000033;
+  transition:transform .24s cubic-bezier(.3,1.4,.5,1);
+}
+.switch[aria-checked="true"] .switch-thumb{
+  transform:translateX(20px);
+}
+
 .chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:18px}
 .chip{
   border-radius:999px;padding:7px 14px;background:var(--card);
@@ -359,44 +389,91 @@ select option{
 
   <div class="bubble" id="bubble" aria-live="polite">A special invitation awaits…</div>
 
-  <svg class="mascot" viewBox="0 0 200 190" role="img" aria-label="A fluffy white bichon in a floral collar">
-    <ellipse cx="100" cy="182" rx="62" ry="5" fill="#00000014"/>
+  <svg class="mascot" viewBox="0 0 200 190" role="img" aria-label="A fluffy white bichon wearing a peach and floral collar">
+    <ellipse cx="100" cy="182" rx="58" ry="5" fill="#00000014"/>
     <g class="dogbody">
-      <circle class="tail" cx="146" cy="146" r="12" fill="#fffdf9" style="stroke:var(--gold)" stroke-width="1.6"/>
-      <g fill="#fffdf9" style="stroke:var(--gold)" stroke-width="1.6">
-        <ellipse cx="100" cy="146" rx="44" ry="31"/><circle cx="76" cy="170" r="13"/><circle cx="124" cy="170" r="13"/>
+      <!-- Fluffy wagging tail & paws -->
+      <circle class="tail" cx="148" cy="148" r="11" fill="#fffdf9" stroke="#e4c7cf" stroke-width="1.4"/>
+      <g fill="#fffdf9" stroke="#e4c7cf" stroke-width="1.4">
+        <ellipse cx="100" cy="148" rx="42" ry="29"/>
+        <circle cx="77" cy="171" r="12.5"/>
+        <circle cx="123" cy="171" r="12.5"/>
       </g>
-      <path d="M52 112 Q100 96 148 112 Q150 128 138 134 Q100 120 62 134 Q50 128 52 112Z" fill="#f4b9a3" stroke="#e6a38b" stroke-width="1"/>
-      <path d="M56 116 Q60 126 58 131 M68 112 Q72 124 70 129 M144 116 Q140 126 142 131 M132 112 Q128 124 130 129" stroke="#e6a38b" stroke-width=".8" fill="none" opacity=".7"/>
-      <path d="M70 118 Q100 150 130 118 L124 132 Q100 156 76 132Z" fill="#fbe9df" stroke="#e6a38b" stroke-width="1"/>
+      <!-- Soft shadow under cape -->
+      <ellipse cx="100" cy="134" rx="46" ry="18" fill="#f2d6dc" opacity=".45"/>
+      <!-- Peach pleated cape -->
+      <path d="M46 112 Q100 98 154 112 L162 134 Q145 141 130 135 Q115 143 100 136 Q85 143 70 135 Q55 141 38 134 Z" fill="#f8a894" stroke="#e38d78" stroke-width="1.2" stroke-linejoin="round"/>
+      <path d="M62 112 L56 135 M80 110 L77 136 M100 109 L100 136 M120 110 L123 136 M138 112 L144 135" stroke="#e38d78" stroke-width="1" fill="none" opacity=".65"/>
+      <!-- Floral patterned hanbok collar band & ties -->
+      <path d="M66 105 L100 128 L134 105 L127 115 L100 135 L73 115 Z" fill="#fffaf7" stroke="#e5b3b8" stroke-width="1.2"/>
+      <path d="M86 118 L76 144 L85 146 L94 123 Z" fill="#fffaf7" stroke="#e5b3b8" stroke-width="1.1"/>
+      <path d="M114 118 L124 144 L115 146 L106 123 Z" fill="#fffaf7" stroke="#e5b3b8" stroke-width="1.1"/>
+      <!-- Tiny blossoms & leaves on collar -->
       <g>
-        <circle cx="80" cy="128" r="2.6" fill="#e88aa0"/><circle cx="90" cy="138" r="2.4" fill="#f2c36b"/>
-        <circle cx="112" cy="138" r="2.6" fill="#e88aa0"/><circle cx="121" cy="127" r="2.4" fill="#f2c36b"/>
-        <ellipse cx="86" cy="143" rx="3" ry="1.5" fill="#a9cba6" transform="rotate(-25 86 143)"/>
-        <ellipse cx="115" cy="143" rx="3" ry="1.5" fill="#a9cba6" transform="rotate(25 115 143)"/>
+        <circle cx="77" cy="112" r="2.4" fill="#f38da5"/><circle cx="88" cy="119" r="2.2" fill="#f7be68"/>
+        <circle cx="112" cy="119" r="2.4" fill="#f38da5"/><circle cx="123" cy="112" r="2.2" fill="#f7be68"/>
+        <circle cx="84" cy="133" r="2.1" fill="#f38da5"/><circle cx="116" cy="133" r="2.1" fill="#f7be68"/>
+        <ellipse cx="81" cy="123" rx="2.8" ry="1.4" fill="#9bc49d" transform="rotate(-20 81 123)"/>
+        <ellipse cx="119" cy="123" rx="2.8" ry="1.4" fill="#9bc49d" transform="rotate(20 119 123)"/>
       </g>
-      <g transform="translate(100 134)" fill="#fff" stroke="#e3d6c8" stroke-width="1.2">
-        <circle cx="0" cy="-8" r="7"/><circle cx="8" cy="-2" r="7"/><circle cx="5" cy="7" r="7"/><circle cx="-5" cy="7" r="7"/><circle cx="-8" cy="-2" r="7"/>
-        <circle r="3.6" fill="#e9d7a8" stroke="#c9a96a"/>
+      <!-- Center white pearl-flower brooch -->
+      <g transform="translate(100 131)">
+        <circle cx="0" cy="-7.5" r="6.2" fill="#ffffff" stroke="#e5cfd4" stroke-width="1"/>
+        <circle cx="7.2" cy="-2.3" r="6.2" fill="#ffffff" stroke="#e5cfd4" stroke-width="1"/>
+        <circle cx="4.5" cy="6.2" r="6.2" fill="#ffffff" stroke="#e5cfd4" stroke-width="1"/>
+        <circle cx="-4.5" cy="6.2" r="6.2" fill="#ffffff" stroke="#e5cfd4" stroke-width="1"/>
+        <circle cx="-7.2" cy="-2.3" r="6.2" fill="#ffffff" stroke="#e5cfd4" stroke-width="1"/>
+        <circle r="3.4" fill="#f6e3b4" stroke="#d4b475" stroke-width=".9"/>
       </g>
-      <g fill="#fff" stroke="#d8cdb8" stroke-width=".8"><circle cx="116" cy="146" r="1.9"/><circle cx="119" cy="152" r="1.9"/><circle cx="117" cy="158" r="1.9"/></g>
-      <g fill="#fffdf9" style="stroke:var(--gold)" stroke-width="1.6">
-        <circle cx="52" cy="74" r="23"/><circle cx="148" cy="74" r="23"/><circle cx="58" cy="44" r="23"/><circle cx="142" cy="44" r="23"/>
-        <circle cx="80" cy="26" r="23"/><circle cx="120" cy="26" r="23"/><circle cx="100" cy="22" r="23"/>
-        <circle cx="58" cy="102" r="21"/><circle cx="142" cy="102" r="21"/>
+      <!-- Fluffy cloud-puff bichon head -->
+      <g fill="#fffdf9" stroke="#e8cdd4" stroke-width="1.4">
+        <circle cx="50" cy="74" r="22"/>
+        <circle cx="150" cy="74" r="22"/>
+        <circle cx="56" cy="45" r="22"/>
+        <circle cx="144" cy="45" r="22"/>
+        <circle cx="78" cy="27" r="22"/>
+        <circle cx="122" cy="27" r="22"/>
+        <circle cx="100" cy="23" r="23"/>
+        <circle cx="58" cy="96" r="19"/>
+        <circle cx="142" cy="96" r="19"/>
       </g>
-      <circle cx="100" cy="68" r="47" fill="#fffdf9"/><circle cx="100" cy="86" r="40" fill="#fffdf9"/>
-      <g stroke="#eadfcf" stroke-width="1.4" fill="none" stroke-linecap="round"><path d="M78 30q8 7 18 2"/><path d="M106 28q9 6 18 0"/><path d="M52 56q3 9 11 12"/><path d="M148 56q-3 9 -11 12"/></g>
-      <ellipse cx="100" cy="98" rx="20" ry="14" fill="#fffefc"/>
-      <circle cx="79" cy="77" r="8" fill="#1d2631" opacity=".12"/><circle cx="121" cy="77" r="8" fill="#1d2631" opacity=".12"/>
-      <circle class="eye" cx="79" cy="77" r="5.4" fill="#1d2631"/><circle cx="81" cy="75" r="1.8" fill="#fff"/>
-      <circle class="eye" cx="121" cy="77" r="5.4" fill="#1d2631"/><circle cx="123" cy="75" r="1.8" fill="#fff"/>
-      <path class="brow" d="M68 64 Q78 60 88 68 M132 64 Q122 60 112 68" stroke="#1d2631" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <path d="M91 96 Q100 88 109 96 Q109 105 100 106 Q91 105 91 96Z" fill="#1d2631"/><ellipse cx="96.5" cy="94.5" rx="3.2" ry="1.6" fill="#fff" opacity=".55"/>
-      <path d="M100 105 V109 M91 108 Q96 113 100 109 Q104 113 109 108" stroke="#1d2631" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-      <path class="tongue" d="M101 111 Q114 110 113 121 Q110 130 103 124 Q100 118 101 111Z" fill="#f19aa8"/>
+      <circle cx="100" cy="68" r="46" fill="#fffdf9"/>
+      <ellipse cx="100" cy="86" rx="44" ry="26" fill="#fffdf9"/>
+      <!-- Soft fur texture wisps -->
+      <g stroke="#ead8de" stroke-width="1.3" fill="none" stroke-linecap="round">
+        <path d="M76 31q8 6 17 2"/>
+        <path d="M107 29q9 6 17 1"/>
+        <path d="M51 58q3 8 10 11"/>
+        <path d="M149 58q-3 8 -10 11"/>
+        <path d="M64 98q7 5 14 2"/>
+        <path d="M136 98q-7 5 -14 2"/>
+      </g>
+      <!-- Sweet muzzle & cheeks -->
+      <ellipse cx="100" cy="95" rx="22" ry="14" fill="#ffffff"/>
+      <ellipse cx="75" cy="87" rx="8" ry="5" fill="#f8b7c5" opacity=".28"/>
+      <ellipse cx="125" cy="87" rx="8" ry="5" fill="#f8b7c5" opacity=".28"/>
+      <!-- Big glossy dark eyes -->
+      <circle class="eye" cx="78" cy="76" r="6.2" fill="#1b1519"/>
+      <circle cx="76" cy="73.8" r="2.2" fill="#ffffff"/>
+      <circle cx="80.5" cy="78.2" r="1.1" fill="#ffffff" opacity=".85"/>
+      <circle class="eye" cx="122" cy="76" r="6.2" fill="#1b1519"/>
+      <circle cx="120" cy="73.8" r="2.2" fill="#ffffff"/>
+      <circle cx="124.5" cy="78.2" r="1.1" fill="#ffffff" opacity=".85"/>
+      <!-- Sad brows (visible on dodge) -->
+      <path class="brow" d="M67 63 Q78 59 88 67 M133 63 Q122 59 112 67" stroke="#2b1e25" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <!-- Cute button nose -->
+      <ellipse cx="100" cy="91" rx="6.2" ry="4.5" fill="#23191e"/>
+      <ellipse cx="98.2" cy="89.5" rx="2" ry="1.1" fill="#ffffff" opacity=".6"/>
+      <!-- Mouth + cute slightly offset pink tongue -->
+      <path d="M100 95.5 V99 M92 98.5 Q96.5 103 100 99 Q103.5 103 108 98.5" stroke="#2b1e25" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      <path class="tongue" d="M102 100.5 Q113 100 112 110 Q110 117 104 112 Q101 107 102 100.5Z" fill="#f295a8" stroke="#d97a8e" stroke-width=".8"/>
     </g>
-    <g class="sparkle" fill="#f5b942"><path d="M24 40 l2.5 7 7 2.5 -7 2.5 -2.5 7 -2.5-7 -7-2.5 7-2.5z"/><path d="M172 24 l2.5 7 7 2.5 -7 2.5 -2.5 7 -2.5-7 -7-2.5 7-2.5z"/><path d="M178 118 l2 5 5 2 -5 2 -2 5 -2-5 -5-2 5-2z"/></g>
+    <!-- Sparkles (visible on happy state) -->
+    <g class="sparkle" fill="#f5b942">
+      <path d="M24 40 l2.5 7 7 2.5 -7 2.5 -2.5 7 -2.5-7 -7-2.5 7-2.5z"/>
+      <path d="M172 24 l2.5 7 7 2.5 -7 2.5 -2.5 7 -2.5-7 -7-2.5 7-2.5z"/>
+      <path d="M178 118 l2 5 5 2 -5 2 -2 5 -2-5 -5-2 5-2z"/>
+    </g>
   </svg>
 
   <div class="eyebrow">✿ Table for Two ✿</div>
@@ -418,7 +495,16 @@ select option{
     <p>Pick whichever evening works best for your schedule.</p>
 
     <div class="booking-panel">
-      <div class="section-label"><span>1. Choose Date &amp; Time</span><small>Quick tap or dropdown</small></div>
+      <div class="section-label"><span>1. Ride &amp; Schedule</span><small>Pick up &amp; date/time</small></div>
+      <div class="ride-box">
+        <div class="ride-copy">
+          <b>Pick-Up Ride</b>
+          <small id="rideSub">Slide on if you want me to pick you up</small>
+        </div>
+        <button type="button" class="switch" id="rideSwitch" role="switch" aria-checked="false" aria-label="Need a pick-up ride">
+          <span class="switch-thumb" aria-hidden="true"></span>
+        </button>
+      </div>
       <div class="quick-dates" id="quickDates" aria-label="Upcoming weekend dates"></div>
 
       <div class="picker-grid">
@@ -449,12 +535,17 @@ select option{
           <small>Time</small>
           <span id="d-time" class="empty">Not selected yet</span>
         </div>
+        <div class="t-cell">
+          <small>Ride</small>
+          <span id="d-ride" class="empty">No pick-up needed</span>
+        </div>
+        <div class="t-cell">
+          <small>Spot</small>
+          <span id="d-where"></span>
+        </div>
         <div class="t-cell full">
-          <div>
-            <small>Spot</small>
-            <span id="d-where"></span>
-          </div>
-          <a class="cal-link hidden" id="calLink" download="sushi-dinner.ics" href="#">+ Add to Calendar</a>
+          <span class="empty" id="calHint">Select date &amp; time for calendar</span>
+          <a class="cal-link hidden" id="calLink" href="#">+ Add to iOS Calendar</a>
         </div>
       </div>
     </div>
@@ -476,6 +567,7 @@ const CONFIG = {
   dmLink: "https://ig.me/m/ronnn.leong",
   profileLink: "https://www.instagram.com/ronnn.leong/",
   month: 11, year: 2026, // 11 = December (0 = January)
+  blockedDates: ["2026-12-05", "2026-12-17", "2026-12-18", "2026-12-19", "2026-12-20"],
   startHour: 11, endHour: 21, stepMinutes: 30,
   quickTimes: ["6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM"],
   defaultTime: "7:00 PM",
@@ -489,14 +581,8 @@ const $ = id => document.getElementById(id);
 $("seal").textContent = CONFIG.initial;
 $("d-where").textContent = CONFIG.where;
 $("from").textContent = CONFIG.fromName;
-const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-$("ig").href = isMobile ? CONFIG.dmLink : CONFIG.profileLink;
-if (!isMobile) {
-  $("ig").setAttribute("target", "_blank");
-  $("ig").setAttribute("rel", "noopener noreferrer");
-} else {
-  $("ig").removeAttribute("target");
-}
+$("ig").href = CONFIG.dmLink;
+$("ig").removeAttribute("target");
 
 /* petals */
 function petals(n){
@@ -595,16 +681,24 @@ CONFIG.favourites.forEach(f => {
   c.addEventListener("click", () => {
     picked.has(f) ? picked.delete(f) : picked.add(f);
     c.classList.toggle("on");
+    refresh();
   });
   $("chips").appendChild(c);
 });
 
-let selDate = null, selTime = null;
+let selDate = null, selTime = null, needRide = false;
+$("rideSwitch").addEventListener("click", () => {
+  needRide = !needRide;
+  $("rideSwitch").setAttribute("aria-checked", String(needRide));
+  refresh();
+});
+
 const fmtDate = d => d.toLocaleDateString("en-GB", {weekday:"short", day:"numeric", month:"short"});
 const fmtLongDate = d => d.toLocaleDateString("en-GB", {weekday:"long", day:"numeric", month:"long"});
 
 function buildReply(){
   let m = `Count me in for sushi at ${CONFIG.where} on ${fmtLongDate(selDate)} at ${selTime}!`;
+  if(needRide) m += ` Also, please pick me up!`;
   if(picked.size) m += ` Definitely saving room for: ${[...picked].join(", ")}.`;
   return m;
 }
@@ -613,8 +707,10 @@ function buildReply(){
 const today0 = new Date();
 today0.setHours(0,0,0,0);
 let days = [];
+const blockedSet = new Set(CONFIG.blockedDates || []);
+const isoDate = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 for(let d = new Date(CONFIG.year, CONFIG.month, 1); d.getMonth() === CONFIG.month; d.setDate(d.getDate() + 1)){
-  if(d >= today0) days.push(new Date(d));
+  if(d >= today0 && !blockedSet.has(isoDate(d))) days.push(new Date(d));
 }
 if(days.length < 5){
   days = [];
@@ -691,14 +787,31 @@ function buildICS(dateObj, timeStr){
   const end = new Date(start.getTime() + 90 * 60000);
   const pad = n => String(n).padStart(2, "0");
   const stamp = d => `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+  const nowStamp = d => `${d.getUTCFullYear()}${pad(d.getUTCMonth()+1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`;
+  const uid = `sushi-${stamp(start)}-${Math.random().toString(36).slice(2,8)}@invitation`;
+  const summary = `Sushi Dinner with ${CONFIG.fromName}`;
+  const parts = [`Pick-up ride: ${needRide ? "Yes" : "No"}`];
+  if(picked.size) parts.push(`Favourites: ${[...picked].join(", ")}`);
+  const desc = parts.join(" | ");
   const ics = [
-    "BEGIN:VCALENDAR","VERSION:2.0","BEGIN:VEVENT",
-    `DTSTART:${stamp(start)}`,`DTEND:${stamp(end)}`,
-    `SUMMARY:Sushi Dinner with ${CONFIG.fromName}`,
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Dinner Invitation//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "BEGIN:VEVENT",
+    `UID:${uid}`,
+    `DTSTAMP:${nowStamp(new Date())}`,
+    `DTSTART:${stamp(start)}`,
+    `DTEND:${stamp(end)}`,
+    `SUMMARY:${summary}`,
+    `DESCRIPTION:${desc}`,
     `LOCATION:${CONFIG.where}`,
-    "END:VEVENT","END:VCALENDAR"
+    "END:VEVENT",
+    "END:VCALENDAR"
   ].join("\r\n");
-  return "data:text/calendar;charset=utf-8," + encodeURIComponent(ics);
+  const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+  return URL.createObjectURL(blob);
 }
 
 function refresh(){
@@ -723,12 +836,22 @@ function refresh(){
     $("count").textContent = "Pick a day";
   }
 
+  $("d-ride").textContent = needRide ? "Pick me up!" : "No pick-up needed";
+  $("d-ride").classList.toggle("empty", !needRide);
+  $("rideSub").textContent = needRide ? "Yes — I'll come pick you up" : "Slide on if you want me to pick you up";
+
   const ready = Boolean(selDate && selTime);
   $("ig").classList.toggle("disabled", !ready);
   $("calLink").classList.toggle("hidden", !ready);
+  $("calHint").classList.toggle("hidden", ready);
 
   if(ready){
-    $("calLink").href = buildICS(selDate, selTime);
+    const prevHref = $("calLink").dataset.blobUrl;
+    if(prevHref) URL.revokeObjectURL(prevHref);
+    const url = buildICS(selDate, selTime);
+    $("calLink").dataset.blobUrl = url;
+    $("calLink").href = url;
+    $("calLink").setAttribute("download", "sushi-dinner.ics");
   }
 }
 
